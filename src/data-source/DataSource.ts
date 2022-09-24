@@ -7,6 +7,7 @@ export interface DataSource {
     updateOne(collection:string, object:any):Promise<void>;
     deleteOne(collection:string, object:any):Promise<void>;
     deleteMany(collection:string, filter:any):Promise<void>;
+    deleteAll(collection:string):Promise<void>;
 
     insertCompositeArrayElement(collection:string, parentObjectKey:any,propertyName:string, childObject:any):Promise<void>;
     replaceCompositeArrayElement(collection:string, parentObjectKey:any,propertyName:string, childObject:any):Promise<void>;

@@ -252,4 +252,8 @@ export class MongoDBDataSourceImpl implements DataSource {
         });
     }
 
+    deleteAll(collection: string): Promise<void> {
+        return this.deleteMany(collection,{});
+    }
+
 }

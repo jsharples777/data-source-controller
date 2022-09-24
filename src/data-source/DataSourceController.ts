@@ -120,4 +120,11 @@ export class DataSourceController implements DataSource{
         return this.replaceOne(collection,object);
     }
 
+    deleteAll(collection: string): Promise<void> {
+        this.controllerConfigs.forEach((config) => {
+            config.source.deleteAll(collection);
+        });
+        return this.getPrimaryDataSource().deleteAll(collection);
+    }
+
 }

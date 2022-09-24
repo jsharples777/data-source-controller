@@ -2,6 +2,18 @@ import {DataSource} from "./DataSource";
 import {FileSystemDB, FileSystemDBHelper} from "file-system-database";
 
 export class FileSystemDBDataSourceImpl implements DataSource {
+    deleteAll(collection: string): Promise<void> {
+        return new Promise((resolve, reject) => {
+            const col = FileSystemDB.getInstance().collection(collection);
+            const results = col.find().toArray();
+            const keyField = col.getKeyFieldName();
+            results.forEach((object) => {
+                col.removeObject(object[keyField]);
+            })
+            resolve();
+        });
+    }
+
     deleteMany(collection: string, filter: any): Promise<void> {
         return new Promise((resolve, reject) => {
             const col = FileSystemDB.getInstance().collection(collection);

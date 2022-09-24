@@ -19,4 +19,5 @@ export declare class DataSourceController implements DataSource {
     replaceCompositeElement(collection: string, parentObjectKey: any, propertyName: string, childObject: any): Promise<void>;
     replaceOne(collection: string, object: any): Promise<void>;
     updateOne(collection: string, object: any): Promise<void>;
+    deleteAll(collection: string): Promise<void>;
 }

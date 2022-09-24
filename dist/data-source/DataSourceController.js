@@ -97,6 +97,12 @@ class DataSourceController {
     updateOne(collection, object) {
         return this.replaceOne(collection, object);
     }
+    deleteAll(collection) {
+        this.controllerConfigs.forEach((config) => {
+            config.source.deleteAll(collection);
+        });
+        return this.getPrimaryDataSource().deleteAll(collection);
+    }
 }
 exports.DataSourceController = DataSourceController;
 //# sourceMappingURL=DataSourceController.js.map

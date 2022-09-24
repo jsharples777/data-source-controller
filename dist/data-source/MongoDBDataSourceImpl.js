@@ -209,6 +209,9 @@ class MongoDBDataSourceImpl {
             });
         });
     }
+    deleteAll(collection) {
+        return this.deleteMany(collection, {});
+    }
 }
 exports.MongoDBDataSourceImpl = MongoDBDataSourceImpl;
 //# sourceMappingURL=MongoDBDataSourceImpl.js.map
