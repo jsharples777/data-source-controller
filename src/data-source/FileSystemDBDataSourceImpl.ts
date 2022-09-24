@@ -2,6 +2,12 @@ import {DataSource} from "./DataSource";
 import {FileSystemDB, FileSystemDBHelper} from "file-system-database";
 
 export class FileSystemDBDataSourceImpl implements DataSource {
+    collections(): Promise<string[]> {
+        return new Promise((resolve, reject) => {
+            resolve(FileSystemDB.getInstance().collections());
+        });
+    }
+
     deleteAll(collection: string): Promise<void> {
         return new Promise((resolve, reject) => {
             const col = FileSystemDB.getInstance().collection(collection);

@@ -256,4 +256,25 @@ export class MongoDBDataSourceImpl implements DataSource {
         return this.deleteMany(collection,{});
     }
 
+    collections(): Promise<string[]> {
+        return new Promise((resolve, reject) => {
+            this.getDatabase().then((db) => {
+                db.collections().then((collections) => {
+                    const results:string[] = [];
+                    collections.forEach((collection) => {
+                        results.push(collection.collectionName);
+                    });
+                    resolve(results);
+
+                }).catch((err) => {
+                    logger(err);
+                    reject(err);
+                })
+
+
+
+            });
+        });
+    }
+
 }

@@ -127,4 +127,8 @@ export class DataSourceController implements DataSource{
         return this.getPrimaryDataSource().deleteAll(collection);
     }
 
+    collections(): Promise<string[]> {
+        return this.getPrimaryDataSource().collections();
+    }
+
 }

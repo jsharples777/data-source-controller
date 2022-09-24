@@ -8,6 +8,7 @@ export interface DataSource {
     deleteOne(collection: string, object: any): Promise<void>;
     deleteMany(collection: string, filter: any): Promise<void>;
     deleteAll(collection: string): Promise<void>;
+    collections(): Promise<string[]>;
     insertCompositeArrayElement(collection: string, parentObjectKey: any, propertyName: string, childObject: any): Promise<void>;
     replaceCompositeArrayElement(collection: string, parentObjectKey: any, propertyName: string, childObject: any): Promise<void>;
     deleteCompositeArrayElement(collection: string, parentObjectKey: any, propertyName: string, childObjectKey: any): Promise<void>;

@@ -103,6 +103,9 @@ class DataSourceController {
         });
         return this.getPrimaryDataSource().deleteAll(collection);
     }
+    collections() {
+        return this.getPrimaryDataSource().collections();
+    }
 }
 exports.DataSourceController = DataSourceController;
 //# sourceMappingURL=DataSourceController.js.map

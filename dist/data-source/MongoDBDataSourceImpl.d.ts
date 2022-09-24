@@ -16,4 +16,5 @@ export declare class MongoDBDataSourceImpl implements DataSource {
     updateOne(collection: string, object: any): Promise<void>;
     getDatabase(): Promise<Db>;
     deleteAll(collection: string): Promise<void>;
+    collections(): Promise<string[]>;
 }

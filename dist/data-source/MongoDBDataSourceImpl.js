@@ -212,6 +212,22 @@ class MongoDBDataSourceImpl {
     deleteAll(collection) {
         return this.deleteMany(collection, {});
     }
+    collections() {
+        return new Promise((resolve, reject) => {
+            this.getDatabase().then((db) => {
+                db.collections().then((collections) => {
+                    const results = [];
+                    collections.forEach((collection) => {
+                        results.push(collection.collectionName);
+                    });
+                    resolve(results);
+                }).catch((err) => {
+                    logger(err);
+                    reject(err);
+                });
+            });
+        });
+    }
 }
 exports.MongoDBDataSourceImpl = MongoDBDataSourceImpl;
 //# sourceMappingURL=MongoDBDataSourceImpl.js.map
