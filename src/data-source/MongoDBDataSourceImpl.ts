@@ -234,10 +234,18 @@ export class MongoDBDataSourceImpl implements DataSource {
 
     public async getDatabase(): Promise<Db> {
         return new Promise((resolve, reject) => {
+            if (MongoDataSource.getInstance().isDatabaseReady()) {
+                MongoDataSource.getInstance().getDatabase().then((db) => {
+                    resolve(db);
+                })
+
+            }
             let interval = setInterval(() => {
-                if (!MongoDataSource.getInstance().isDatabaseReady()) {
+                if (MongoDataSource.getInstance().isDatabaseReady()) {
                     clearInterval(interval);
-                    resolve(MongoDataSource.getInstance().getDatabase());
+                    MongoDataSource.getInstance().getDatabase().then((db) => {
+                        resolve(db);
+                    })
                 }
             }, 1000);
 

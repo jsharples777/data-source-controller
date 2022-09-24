@@ -18,7 +18,7 @@
     "dotenv": "^10.0.0",
     "file-system-database": "^0.2.8-1",
     "moment": "^2.29.1",
-    "mongo-access-jps": "^1.0.1",
+    "mongo-access-jps": "^1.0.2",
     "mongodb": "^4.1.1",
     "path": "^0.12.7",
     "uuid": "^8.3.2"

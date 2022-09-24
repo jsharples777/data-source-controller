@@ -193,10 +193,17 @@ class MongoDBDataSourceImpl {
     getDatabase() {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => {
+                if (mongo_access_jps_1.MongoDataSource.getInstance().isDatabaseReady()) {
+                    mongo_access_jps_1.MongoDataSource.getInstance().getDatabase().then((db) => {
+                        resolve(db);
+                    });
+                }
                 let interval = setInterval(() => {
-                    if (!mongo_access_jps_1.MongoDataSource.getInstance().isDatabaseReady()) {
+                    if (mongo_access_jps_1.MongoDataSource.getInstance().isDatabaseReady()) {
                         clearInterval(interval);
-                        resolve(mongo_access_jps_1.MongoDataSource.getInstance().getDatabase());
+                        mongo_access_jps_1.MongoDataSource.getInstance().getDatabase().then((db) => {
+                            resolve(db);
+                        });
                     }
                 }, 1000);
             });
