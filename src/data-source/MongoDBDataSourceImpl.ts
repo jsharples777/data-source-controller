@@ -13,19 +13,19 @@ export class MongoDBDataSourceImpl implements DataSource {
 
 
     insertCompositeArrayElement(collection: string, parentObjectKey: any, propertyName: string, childObject: any): Promise<void> {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, logger) => {
             let obj: any = {};
             obj[propertyName] = childObject;
-            logger(`Inserting into collection ${collection} with new array element for field ${propertyName} with id ${childObject._id}`);
+            console.log(`Inserting into collection ${collection} with new array element for field ${propertyName} with id ${childObject._id}`);
             this.getDatabase().then((db) => {
                 db.collection(collection).updateOne(
                     {_id: parentObjectKey},
                     {$push: obj}).then((result) => {
-                    logger(result);
+                    console.log(result);
                     resolve();
                 }).catch((err) => {
+                    console.log(err);
                     logger(err);
-                    reject(err);
                 });
 
             })
@@ -33,29 +33,29 @@ export class MongoDBDataSourceImpl implements DataSource {
     }
 
     replaceCompositeArrayElement(collection: string, parentObjectKey: any, propertyName: string, childObject: any): Promise<void> {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, logger) => {
             let pullObj: any = {};
             pullObj[propertyName] = {_id: childObject._id};
-            logger(`Updating collection ${collection} with updated array element for field ${propertyName} with id ${childObject._id}`);
+            console.log(`Updating collection ${collection} with updated array element for field ${propertyName} with id ${childObject._id}`);
             this.getDatabase().then((db) => {
                 db.collection(collection).updateOne(
                     {_id: parentObjectKey},
                     {$pull: pullObj}).then((result) => {
-                    logger(result);
+                    console.log(result);
                     let obj: any = {};
                     obj[propertyName] = childObject;
                     db.collection(collection).updateOne(
                         {_id: parentObjectKey},
                         {$push: obj}).then((result) => {
-                        logger(result);
+                        console.log(result);
                         resolve();
                     }).catch((err) => {
+                        console.log(err);
                         logger(err);
-                        reject(err);
                     });
                 }).catch((err) => {
+                    console.log(err);
                     logger(err);
-                    reject(err);
                 });
 
             });
@@ -63,7 +63,7 @@ export class MongoDBDataSourceImpl implements DataSource {
     }
 
     deleteCompositeArrayElement(collection: string, parentObjectKey: any, propertyName: string, childObjectKey: any): Promise<void> {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, logger) => {
             let obj: any = {};
             obj[propertyName] = {_id: childObjectKey};
             this.getDatabase().then((db) => {
@@ -71,11 +71,11 @@ export class MongoDBDataSourceImpl implements DataSource {
                 db.collection(collection).updateOne(
                     {_id: parentObjectKey},
                     {$pull: obj}).then((result) => {
-                    logger(result);
+                    console.log(result);
                     resolve();
                 }).catch((err) => {
+                    console.log(err);
                     logger(err);
-                    reject(err);
                 });
             });
 
@@ -83,8 +83,8 @@ export class MongoDBDataSourceImpl implements DataSource {
     }
 
     replaceCompositeElement(collection: string, parentObjectKey: any, propertyName: string, childObject: any): Promise<void> {
-        return new Promise((resolve, reject) => {
-            logger(`Updating collection ${collection}  with updated field ${propertyName} with id ${childObject._id}`);
+        return new Promise((resolve, logger) => {
+            console.log(`Updating collection ${collection}  with updated field ${propertyName} with id ${childObject._id}`);
             let obj: any = {};
             obj[propertyName] = childObject;
             this.getDatabase().then((db) => {
@@ -92,11 +92,11 @@ export class MongoDBDataSourceImpl implements DataSource {
                 db.collection(collection).updateOne(
                     {_id: parentObjectKey},
                     {$set: obj}).then((result) => {
-                    logger(result);
+                    console.log(result);
                     resolve();
                 }).catch((err) => {
+                    console.log(err);
                     logger(err);
-                    reject(err);
                 });
 
             });
@@ -105,14 +105,14 @@ export class MongoDBDataSourceImpl implements DataSource {
     }
 
     deleteOne(collection: string, object: any): Promise<void> {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, logger) => {
             this.getDatabase().then((db) => {
 
                 db.collection(collection).deleteOne(object).then((result) => {
                     resolve();
                 }).catch((err) => {
+                    console.log(err);
                     logger(err);
-                    reject(err);
                 })
 
             });
@@ -121,14 +121,14 @@ export class MongoDBDataSourceImpl implements DataSource {
     }
 
     deleteMany(collection: string, filter: any): Promise<void> {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, logger) => {
             this.getDatabase().then((db) => {
 
                 db.collection(collection).deleteMany(filter).then((result) => {
                     resolve();
                 }).catch((err) => {
+                    console.log(err);
                     logger(err);
-                    reject(err);
                 })
 
             });
@@ -137,7 +137,7 @@ export class MongoDBDataSourceImpl implements DataSource {
     }
 
     find(collection: string, filter?: any, sort?: any): Promise<any[]> {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, logger) => {
             let localFilter = {};
             if (filter) {
                 localFilter = filter;
@@ -148,16 +148,16 @@ export class MongoDBDataSourceImpl implements DataSource {
                     db.collection(collection).find(localFilter).sort(sort).toArray().then((result) => {
                         resolve(result);
                     }).catch((err) => {
+                        console.log(err);
                         logger(err);
-                        reject(err);
                     })
                 }
                 else {
                     db.collection(collection).find(localFilter).toArray().then((result) => {
                         resolve(result);
                     }).catch((err) => {
+                        console.log(err);
                         logger(err);
-                        reject(err);
                     })
 
                 }
@@ -170,7 +170,7 @@ export class MongoDBDataSourceImpl implements DataSource {
     }
 
     findOne(collection: string, filter: any): Promise<any> {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, logger) => {
             this.getDatabase().then((db) => {
 
                 db.collection(collection).find(filter).toArray().then((result) => {
@@ -180,8 +180,8 @@ export class MongoDBDataSourceImpl implements DataSource {
                         resolve(undefined);
                     }
                 }).catch((err) => {
+                    console.log(err);
                     logger(err);
-                    reject(err);
                 })
             });
         });
@@ -189,14 +189,14 @@ export class MongoDBDataSourceImpl implements DataSource {
     }
 
     insertMany(collection: string, objects: any[]): Promise<void> {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, logger) => {
             this.getDatabase().then((db) => {
 
                 db.collection(collection).insertMany(objects).then((result) => {
                     resolve();
                 }).catch((err) => {
+                    console.log(err);
                     logger(err);
-                    reject(err);
                 })
 
             });
@@ -205,14 +205,14 @@ export class MongoDBDataSourceImpl implements DataSource {
     }
 
     insertOne(collection: string, object: any): Promise<void> {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, logger) => {
             this.getDatabase().then((db) => {
 
                 db.collection(collection).insertOne(object).then((result) => {
                     resolve();
                 }).catch((err) => {
+                    console.log(err);
                     logger(err);
-                    reject(err);
                 })
 
             });
@@ -221,14 +221,14 @@ export class MongoDBDataSourceImpl implements DataSource {
     }
 
     replaceOne(collection: string, object: any): Promise<void> {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, logger) => {
             this.getDatabase().then((db) => {
 
                 db.collection(collection).replaceOne({_id: object._id}, object).then((result) => {
                     resolve();
                 }).catch((err) => {
+                    console.log(err);
                     logger(err);
-                    reject(err);
                 })
 
             });
@@ -241,7 +241,7 @@ export class MongoDBDataSourceImpl implements DataSource {
 
 
     public async getDatabase(): Promise<Db> {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, logger) => {
             if (MongoDataSource.getInstance().isDatabaseReady()) {
                 MongoDataSource.getInstance().getDatabase().then((db) => {
                     resolve(db);
@@ -265,7 +265,7 @@ export class MongoDBDataSourceImpl implements DataSource {
     }
 
     collections(): Promise<string[]> {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, logger) => {
             this.getDatabase().then((db) => {
                 db.collections().then((collections) => {
                     const results:string[] = [];
@@ -275,8 +275,8 @@ export class MongoDBDataSourceImpl implements DataSource {
                     resolve(results);
 
                 }).catch((err) => {
+                    console.log(err);
                     logger(err);
-                    reject(err);
                 })
 
 
