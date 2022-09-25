@@ -21,26 +21,22 @@ export class test {
             DataSourceController.getInstance().addDataSource(new FileSystemDBDataSourceImpl(),isReadingFromFileSystemDB);
         }
         const collection = process.env.DB_COLLECTION_USERS || 'pms-users';
-        DataSourceController.getInstance().find(collection,{username:'Dr Jim Sharples'}).then((users) => {
-            console.log(users);
-        });
-        DataSourceController.getInstance().find(collection,{username:'Dr Jim Sharples'}).then((users) => {
-            console.log(users);
-        });
-        DataSourceController.getInstance().find(collection,{username:'Dr Jim Sharples'}).then((users) => {
-            console.log(users);
-        });
-        DataSourceController.getInstance().find(collection,{username:'Dr Jim Sharples'}).then((users) => {
-            console.log(users);
-        });
-        DataSourceController.getInstance().find(collection,{username:'Dr Jim Sharples'}).then((users) => {
-            console.log(users);
-        });
-        DataSourceController.getInstance().find(collection,{username:'Dr Jim Sharples'}).then((users) => {
-            console.log(users);
-        });
-        DataSourceController.getInstance().find(collection,{username:'Dr Jim Sharples'}).then((users) => {
-            console.log(users);
+        DataSourceController.getInstance().find(collection, {isCurrent: true, providerNo: {$ne: ''}}).then((results) => {
+            const providers: any[] = [];
+            results.forEach((user) => {
+                const provider: any = {
+                    _id: user._id,
+                    name: user.username,
+                    providerNo: user.providerNo,
+                    isCurrent: true,
+                    isProvider: true
+                }
+                providers.push(provider);
+            });
+            logger(providers.length);
+
+
+
         });
     }
 

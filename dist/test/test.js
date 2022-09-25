@@ -43,26 +43,19 @@ class test {
             DataSourceController_1.DataSourceController.getInstance().addDataSource(new FileSystemDBDataSourceImpl_1.FileSystemDBDataSourceImpl(), isReadingFromFileSystemDB);
         }
         const collection = process.env.DB_COLLECTION_USERS || 'pms-users';
-        DataSourceController_1.DataSourceController.getInstance().find(collection, { username: 'Dr Jim Sharples' }).then((users) => {
-            console.log(users);
-        });
-        DataSourceController_1.DataSourceController.getInstance().find(collection, { username: 'Dr Jim Sharples' }).then((users) => {
-            console.log(users);
-        });
-        DataSourceController_1.DataSourceController.getInstance().find(collection, { username: 'Dr Jim Sharples' }).then((users) => {
-            console.log(users);
-        });
-        DataSourceController_1.DataSourceController.getInstance().find(collection, { username: 'Dr Jim Sharples' }).then((users) => {
-            console.log(users);
-        });
-        DataSourceController_1.DataSourceController.getInstance().find(collection, { username: 'Dr Jim Sharples' }).then((users) => {
-            console.log(users);
-        });
-        DataSourceController_1.DataSourceController.getInstance().find(collection, { username: 'Dr Jim Sharples' }).then((users) => {
-            console.log(users);
-        });
-        DataSourceController_1.DataSourceController.getInstance().find(collection, { username: 'Dr Jim Sharples' }).then((users) => {
-            console.log(users);
+        DataSourceController_1.DataSourceController.getInstance().find(collection, { isCurrent: true, providerNo: { $ne: '' } }).then((results) => {
+            const providers = [];
+            results.forEach((user) => {
+                const provider = {
+                    _id: user._id,
+                    name: user.username,
+                    providerNo: user.providerNo,
+                    isCurrent: true,
+                    isProvider: true
+                };
+                providers.push(provider);
+            });
+            logger(providers.length);
         });
     }
 }

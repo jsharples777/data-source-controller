@@ -15,7 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MongoDBDataSourceImpl = void 0;
 const mongo_access_jps_1 = require("mongo-access-jps");
 const debug_1 = __importDefault(require("debug"));
-const logger = debug_1.default('mongo-data-source');
+const logger = debug_1.default('mongo-data-source-impl');
+const errorLogger = debug_1.default('mongo-data-source-impl-error');
 class MongoDBDataSourceImpl {
     constructor() {
         mongo_access_jps_1.MongoDataSource.getInstance().initialise();
@@ -24,14 +25,14 @@ class MongoDBDataSourceImpl {
         return new Promise((resolve, logger) => {
             let obj = {};
             obj[propertyName] = childObject;
-            console.log(`Inserting into collection ${collection} with new array element for field ${propertyName} with id ${childObject._id}`);
+            logger(`Inserting into collection ${collection} with new array element for field ${propertyName} with id ${childObject._id}`);
             this.getDatabase().then((db) => {
                 db.collection(collection).updateOne({ _id: parentObjectKey }, { $push: obj }).then((result) => {
-                    console.log(result);
+                    logger(result);
                     resolve();
                 }).catch((err) => {
-                    console.log(err);
                     logger(err);
+                    errorLogger(err);
                 });
             });
         });
@@ -40,54 +41,54 @@ class MongoDBDataSourceImpl {
         return new Promise((resolve, logger) => {
             let pullObj = {};
             pullObj[propertyName] = { _id: childObject._id };
-            console.log(`Updating collection ${collection} with updated array element for field ${propertyName} with id ${childObject._id}`);
+            logger(`Updating collection ${collection} with updated array element for field ${propertyName} with id ${childObject._id}`);
             this.getDatabase().then((db) => {
                 db.collection(collection).updateOne({ _id: parentObjectKey }, { $pull: pullObj }).then((result) => {
-                    console.log(result);
+                    logger(result);
                     let obj = {};
                     obj[propertyName] = childObject;
                     db.collection(collection).updateOne({ _id: parentObjectKey }, { $push: obj }).then((result) => {
-                        console.log(result);
+                        logger(result);
                         resolve();
                     }).catch((err) => {
-                        console.log(err);
                         logger(err);
+                        errorLogger(err);
                     });
                 }).catch((err) => {
-                    console.log(err);
                     logger(err);
+                    errorLogger(err);
                 });
             });
         });
     }
     deleteCompositeArrayElement(collection, parentObjectKey, propertyName, childObjectKey) {
         return new Promise((resolve, logger) => {
-            console.log(`Updating collection ${collection} removing array element for field ${propertyName} with id ${childObjectKey}`);
+            logger(`Updating collection ${collection} removing array element for field ${propertyName} with id ${childObjectKey}`);
             let obj = {};
             obj[propertyName] = { _id: childObjectKey };
             this.getDatabase().then((db) => {
                 db.collection(collection).updateOne({ _id: parentObjectKey }, { $pull: obj }).then((result) => {
-                    console.log(result);
+                    logger(result);
                     resolve();
                 }).catch((err) => {
-                    console.log(err);
                     logger(err);
+                    errorLogger(err);
                 });
             });
         });
     }
     replaceCompositeElement(collection, parentObjectKey, propertyName, childObject) {
         return new Promise((resolve, logger) => {
-            console.log(`Updating collection ${collection}  with updated field ${propertyName} with id ${childObject._id}`);
+            logger(`Updating collection ${collection}  with updated field ${propertyName} with id ${childObject._id}`);
             let obj = {};
             obj[propertyName] = childObject;
             this.getDatabase().then((db) => {
                 db.collection(collection).updateOne({ _id: parentObjectKey }, { $set: obj }).then((result) => {
-                    console.log(result);
+                    logger(result);
                     resolve();
                 }).catch((err) => {
-                    console.log(err);
                     logger(err);
+                    errorLogger(err);
                 });
             });
         });
@@ -95,12 +96,12 @@ class MongoDBDataSourceImpl {
     deleteOne(collection, object) {
         return new Promise((resolve, logger) => {
             this.getDatabase().then((db) => {
-                console.log(`Collection ${collection} removing id ${object._id}`);
+                logger(`Collection ${collection} removing id ${object._id}`);
                 db.collection(collection).deleteOne(object).then((result) => {
                     resolve();
                 }).catch((err) => {
-                    console.log(err);
                     logger(err);
+                    errorLogger(err);
                 });
             });
         });
@@ -108,13 +109,13 @@ class MongoDBDataSourceImpl {
     deleteMany(collection, filter) {
         return new Promise((resolve, logger) => {
             this.getDatabase().then((db) => {
-                console.log(`Collection ${collection} removing many with filter`);
-                console.log(filter);
+                logger(`Collection ${collection} removing many with filter`);
+                logger(filter);
                 db.collection(collection).deleteMany(filter).then((result) => {
                     resolve();
                 }).catch((err) => {
-                    console.log(err);
                     logger(err);
+                    errorLogger(err);
                 });
             });
         });
@@ -125,25 +126,25 @@ class MongoDBDataSourceImpl {
             if (filter) {
                 localFilter = filter;
             }
-            console.log(`Collection ${collection} finding with filter`);
-            console.log(filter);
+            logger(`Collection ${collection} finding with filter`);
+            logger(filter);
             this.getDatabase().then((db) => {
                 if (sort) {
-                    console.log(`Collection ${collection} finding with filter and sorting`);
-                    console.log(sort);
+                    logger(`Collection ${collection} finding with filter and sorting`);
+                    logger(sort);
                     db.collection(collection).find(localFilter).sort(sort).toArray().then((result) => {
                         resolve(result);
                     }).catch((err) => {
-                        console.log(err);
                         logger(err);
+                        errorLogger(err);
                     });
                 }
                 else {
                     db.collection(collection).find(localFilter).toArray().then((result) => {
                         resolve(result);
                     }).catch((err) => {
-                        console.log(err);
                         logger(err);
+                        errorLogger(err);
                     });
                 }
             });
@@ -152,8 +153,8 @@ class MongoDBDataSourceImpl {
     findOne(collection, filter) {
         return new Promise((resolve, logger) => {
             this.getDatabase().then((db) => {
-                console.log(`Collection ${collection} finding one with filter`);
-                console.log(filter);
+                logger(`Collection ${collection} finding one with filter`);
+                logger(filter);
                 db.collection(collection).find(filter).toArray().then((result) => {
                     if (result.length > 0) {
                         resolve(result[0]);
@@ -162,8 +163,8 @@ class MongoDBDataSourceImpl {
                         resolve(undefined);
                     }
                 }).catch((err) => {
-                    console.log(err);
                     logger(err);
+                    errorLogger(err);
                 });
             });
         });
@@ -171,13 +172,13 @@ class MongoDBDataSourceImpl {
     insertMany(collection, objects) {
         return new Promise((resolve, logger) => {
             this.getDatabase().then((db) => {
-                console.log(`Collection ${collection} inserting many`);
-                console.log(objects);
+                logger(`Collection ${collection} inserting many`);
+                logger(objects);
                 db.collection(collection).insertMany(objects).then((result) => {
                     resolve();
                 }).catch((err) => {
-                    console.log(err);
                     logger(err);
+                    errorLogger(err);
                 });
             });
         });
@@ -185,13 +186,13 @@ class MongoDBDataSourceImpl {
     insertOne(collection, object) {
         return new Promise((resolve, logger) => {
             this.getDatabase().then((db) => {
-                console.log(`Collection ${collection} inserting one`);
-                console.log(object);
+                logger(`Collection ${collection} inserting one`);
+                logger(object);
                 db.collection(collection).insertOne(object).then((result) => {
                     resolve();
                 }).catch((err) => {
-                    console.log(err);
                     logger(err);
+                    errorLogger(err);
                 });
             });
         });
@@ -199,13 +200,13 @@ class MongoDBDataSourceImpl {
     replaceOne(collection, object) {
         return new Promise((resolve, logger) => {
             this.getDatabase().then((db) => {
-                console.log(`Collection ${collection} replacing one`);
-                console.log(object);
+                logger(`Collection ${collection} replacing one`);
+                logger(object);
                 db.collection(collection).replaceOne({ _id: object._id }, object).then((result) => {
                     resolve();
                 }).catch((err) => {
-                    console.log(err);
                     logger(err);
+                    errorLogger(err);
                 });
             });
         });
@@ -245,8 +246,8 @@ class MongoDBDataSourceImpl {
                     });
                     resolve(results);
                 }).catch((err) => {
-                    console.log(err);
                     logger(err);
+                    errorLogger(err);
                 });
             });
         });
