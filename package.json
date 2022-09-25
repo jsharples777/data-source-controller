@@ -1,6 +1,6 @@
 {
   "name": "data-source-controller",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Simple wrapper access to a data source implementation (e.g. mongo, file system database)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
