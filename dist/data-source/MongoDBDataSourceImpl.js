@@ -21,6 +21,11 @@ class MongoDBDataSourceImpl {
     constructor() {
         mongo_access_jps_1.MongoDataSource.getInstance().initialise();
     }
+    shutdown() {
+        return new Promise((resolve, reject) => {
+            resolve();
+        });
+    }
     insertCompositeArrayElement(collection, parentObjectKey, propertyName, childObject) {
         return new Promise((resolve, logger) => {
             let obj = {};

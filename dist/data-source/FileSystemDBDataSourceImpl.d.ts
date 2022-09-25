@@ -15,4 +15,5 @@ export declare class FileSystemDBDataSourceImpl implements DataSource {
     insertCompositeArrayElement(collection: string, parentObjectKey: any, propertyName: string, childObject: any): Promise<void>;
     replaceCompositeArrayElement(collection: string, parentObjectKey: any, propertyName: string, childObject: any): Promise<void>;
     replaceCompositeElement(collection: string, parentObjectKey: any, propertyName: string, childObject: any): Promise<void>;
+    shutdown(): Promise<void>;
 }

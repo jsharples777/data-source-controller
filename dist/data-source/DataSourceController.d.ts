@@ -21,4 +21,5 @@ export declare class DataSourceController implements DataSource {
     updateOne(collection: string, object: any): Promise<void>;
     deleteAll(collection: string): Promise<void>;
     collections(): Promise<string[]>;
+    shutdown(): Promise<void>;
 }

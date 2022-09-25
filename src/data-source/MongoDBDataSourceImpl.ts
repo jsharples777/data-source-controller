@@ -12,6 +12,12 @@ export class MongoDBDataSourceImpl implements DataSource {
         MongoDataSource.getInstance().initialise();
     }
 
+    shutdown(): Promise<void> {
+        return new Promise((resolve,reject) => {
+            resolve();
+        })
+    }
+
 
     insertCompositeArrayElement(collection: string, parentObjectKey: any, propertyName: string, childObject: any): Promise<void> {
         return new Promise((resolve, logger) => {

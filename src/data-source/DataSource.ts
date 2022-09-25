@@ -16,4 +16,6 @@ export interface DataSource {
     deleteCompositeArrayElement(collection:string, parentObjectKey:any,propertyName:string, childObjectKey:any):Promise<void>;
 
     replaceCompositeElement(collection:string, parentObjectKey:any,propertyName:string, childObject:any):Promise<void>;
+
+    shutdown():Promise<void>;
 }

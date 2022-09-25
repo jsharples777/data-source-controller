@@ -2,6 +2,7 @@ import { DataSource } from "./DataSource";
 import { Db } from "mongodb";
 export declare class MongoDBDataSourceImpl implements DataSource {
     constructor();
+    shutdown(): Promise<void>;
     insertCompositeArrayElement(collection: string, parentObjectKey: any, propertyName: string, childObject: any): Promise<void>;
     replaceCompositeArrayElement(collection: string, parentObjectKey: any, propertyName: string, childObject: any): Promise<void>;
     deleteCompositeArrayElement(collection: string, parentObjectKey: any, propertyName: string, childObjectKey: any): Promise<void>;

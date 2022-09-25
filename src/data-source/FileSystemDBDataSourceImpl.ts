@@ -139,4 +139,12 @@ export class FileSystemDBDataSourceImpl implements DataSource {
         });
     }
 
+    shutdown(): Promise<void> {
+        return new Promise((resolve, reject) => {
+            FileSystemDB.getInstance().shutdown();
+            resolve();
+
+        })
+    }
+
 }

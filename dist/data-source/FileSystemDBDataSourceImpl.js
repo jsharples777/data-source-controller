@@ -126,6 +126,12 @@ class FileSystemDBDataSourceImpl {
             resolve();
         });
     }
+    shutdown() {
+        return new Promise((resolve, reject) => {
+            file_system_database_1.FileSystemDB.getInstance().shutdown();
+            resolve();
+        });
+    }
 }
 exports.FileSystemDBDataSourceImpl = FileSystemDBDataSourceImpl;
 //# sourceMappingURL=FileSystemDBDataSourceImpl.js.map

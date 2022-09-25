@@ -227,6 +227,21 @@ class DataSourceController {
             });
         });
     }
+    shutdown() {
+        return new Promise((resolve, reject) => {
+            this.getPrimaryDataSource().shutdown().then((results) => {
+                this.controllerConfigs.forEach((config) => {
+                    config.source.shutdown().then((childResults) => {
+                    }).catch((err) => {
+                        logger(err);
+                    });
+                });
+                resolve();
+            }).catch((err) => {
+                logger(err);
+            });
+        });
+    }
 }
 exports.DataSourceController = DataSourceController;
 //# sourceMappingURL=DataSourceController.js.map
