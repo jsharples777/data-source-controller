@@ -53,12 +53,12 @@ export class DataSourceController implements DataSource {
                     config.source.deleteCompositeArrayElement(collection, parentObjectKey, propertyName, childObjectKey).then((childResults) => {
 
                     }).catch((err) => {
-                        console.log(err);
+                        logger(err);
                     });
                 });
                 resolve(results);
             }).catch((err) => {
-                console.log(err);
+                logger(err);
             });
 
         });
@@ -73,12 +73,12 @@ export class DataSourceController implements DataSource {
                     config.source.deleteOne(collection, object).then((childResults) => {
 
                     }).catch((err) => {
-                        console.log(err);
+                        logger(err);
                     });
                 });
                 resolve(results);
             }).catch((err) => {
-                console.log(err);
+                logger(err);
             });
 
         });
@@ -92,12 +92,12 @@ export class DataSourceController implements DataSource {
                     config.source.deleteMany(collection, filter).then((childResults) => {
 
                     }).catch((err) => {
-                        console.log(err);
+                        logger(err);
                     });
                 });
                 resolve(results);
             }).catch((err) => {
-                console.log(err);
+                logger(err);
             });
 
         });
@@ -109,7 +109,7 @@ export class DataSourceController implements DataSource {
             this.getPrimaryDataSource().find(collection, filter, sort).then((results) => {
                 resolve(results);
             }).catch((err) => {
-                console.log(err);
+                logger(err);
             });
 
         })
@@ -121,7 +121,7 @@ export class DataSourceController implements DataSource {
             this.getPrimaryDataSource().findOne(collection, filter).then((results) => {
                 resolve(results);
             }).catch((err) => {
-                console.log(err);
+                logger(err);
             });
 
         });
@@ -135,12 +135,12 @@ export class DataSourceController implements DataSource {
                     config.source.insertCompositeArrayElement(collection, parentObjectKey, propertyName, childObject).then((childResults) => {
 
                     }).catch((err) => {
-                        console.log(err);
+                        logger(err);
                     });
                 });
                 resolve(results);
             }).catch((err) => {
-                console.log(err);
+                logger(err);
             });
 
         });
@@ -155,12 +155,12 @@ export class DataSourceController implements DataSource {
                     config.source.insertMany(collection, objects).then((childResults) => {
 
                     }).catch((err) => {
-                        console.log(err);
+                        logger(err);
                     });
                 });
                 resolve(results);
             }).catch((err) => {
-                console.log(err);
+                logger(err);
             });
 
         });
@@ -176,12 +176,12 @@ export class DataSourceController implements DataSource {
                     config.source.insertOne(collection, object).then((childResults) => {
 
                     }).catch((err) => {
-                        console.log(err);
+                        logger(err);
                     });
                 });
                 resolve(results);
             }).catch((err) => {
-                console.log(err);
+                logger(err);
             });
 
         });
@@ -197,12 +197,12 @@ export class DataSourceController implements DataSource {
                     config.source.replaceCompositeArrayElement(collection, parentObjectKey, propertyName, childObject).then((childResults) => {
 
                     }).catch((err) => {
-                        console.log(err);
+                        logger(err);
                     });
                 });
                 resolve(results);
             }).catch((err) => {
-                console.log(err);
+                logger(err);
             });
 
         });
@@ -217,12 +217,12 @@ export class DataSourceController implements DataSource {
                     config.source.replaceCompositeElement(collection, parentObjectKey, propertyName, childObject).then((childResults) => {
 
                     }).catch((err) => {
-                        console.log(err);
+                        logger(err);
                     });
                 });
                 resolve(results);
             }).catch((err) => {
-                console.log(err);
+                logger(err);
             });
 
         });
@@ -237,12 +237,12 @@ export class DataSourceController implements DataSource {
                     config.source.replaceOne(collection, object).then((childResults) => {
 
                     }).catch((err) => {
-                        console.log(err);
+                        logger(err);
                     });
                 });
                 resolve(results);
             }).catch((err) => {
-                console.log(err);
+                logger(err);
             });
 
         });
@@ -256,12 +256,12 @@ export class DataSourceController implements DataSource {
                     config.source.replaceOne(collection, object).then((childResults) => {
 
                     }).catch((err) => {
-                        console.log(err);
+                        logger(err);
                     });
                 });
                 resolve(results);
             }).catch((err) => {
-                console.log(err);
+                logger(err);
             });
 
         });
@@ -276,12 +276,12 @@ export class DataSourceController implements DataSource {
                     config.source.deleteAll(collection).then((childResults) => {
 
                     }).catch((err) => {
-                        console.log(err);
+                        logger(err);
                     });
                 });
                 resolve(results);
             }).catch((err) => {
-                console.log(err);
+                logger(err);
             });
 
         });
@@ -293,7 +293,7 @@ export class DataSourceController implements DataSource {
             this.getPrimaryDataSource().collections().then((results) => {
                 resolve(results);
             }).catch((err) => {
-                console.log(err);
+                logger(err);
             });
 
         });
