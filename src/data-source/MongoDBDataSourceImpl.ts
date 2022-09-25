@@ -8,7 +8,7 @@ const logger = debug('mongo-data-source');
 export class MongoDBDataSourceImpl implements DataSource {
 
     constructor() {
-
+        MongoDataSource.getInstance().initialise();
     }
 
 

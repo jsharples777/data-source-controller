@@ -3,6 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.FileSystemDBDataSourceImpl = void 0;
 const file_system_database_1 = require("file-system-database");
 class FileSystemDBDataSourceImpl {
+    constructor() {
+        file_system_database_1.FileSystemDB.getInstance().initialise();
+    }
     collections() {
         return new Promise((resolve, reject) => {
             resolve(file_system_database_1.FileSystemDB.getInstance().collections());

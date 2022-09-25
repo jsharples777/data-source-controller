@@ -18,6 +18,7 @@ const debug_1 = __importDefault(require("debug"));
 const logger = debug_1.default('mongo-data-source');
 class MongoDBDataSourceImpl {
     constructor() {
+        mongo_access_jps_1.MongoDataSource.getInstance().initialise();
     }
     insertCompositeArrayElement(collection, parentObjectKey, propertyName, childObject) {
         return new Promise((resolve, reject) => {

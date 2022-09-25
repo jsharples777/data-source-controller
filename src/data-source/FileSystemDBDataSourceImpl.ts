@@ -2,6 +2,9 @@ import {DataSource} from "./DataSource";
 import {FileSystemDB, FileSystemDBHelper} from "file-system-database";
 
 export class FileSystemDBDataSourceImpl implements DataSource {
+    constructor() {
+        FileSystemDB.getInstance().initialise();
+    }
     collections(): Promise<string[]> {
         return new Promise((resolve, reject) => {
             resolve(FileSystemDB.getInstance().collections());

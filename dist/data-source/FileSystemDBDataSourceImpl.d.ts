@@ -1,5 +1,6 @@
 import { DataSource } from "./DataSource";
 export declare class FileSystemDBDataSourceImpl implements DataSource {
+    constructor();
     collections(): Promise<string[]>;
     deleteAll(collection: string): Promise<void>;
     deleteMany(collection: string, filter: any): Promise<void>;

@@ -10,7 +10,8 @@
   "scripts": {
     "watch": "tsc-watch",
     "compile": "tsc",
-    "lint": "eslint --ext js,jsx,tsx,ts --fix ."
+    "lint": "eslint --ext js,jsx,tsx,ts --fix .",
+    "test": "ts-node ./src/test/test.ts"
   },
   "dependencies": {
     "buffer": "^5.7.1",
