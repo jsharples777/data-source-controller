@@ -62,6 +62,7 @@ class MongoDBDataSourceImpl {
     }
     deleteCompositeArrayElement(collection, parentObjectKey, propertyName, childObjectKey) {
         return new Promise((resolve, logger) => {
+            console.log(`Updating collection ${collection} removing array element for field ${propertyName} with id ${childObjectKey}`);
             let obj = {};
             obj[propertyName] = { _id: childObjectKey };
             this.getDatabase().then((db) => {
@@ -94,6 +95,7 @@ class MongoDBDataSourceImpl {
     deleteOne(collection, object) {
         return new Promise((resolve, logger) => {
             this.getDatabase().then((db) => {
+                console.log(`Collection ${collection} removing id ${object._id}`);
                 db.collection(collection).deleteOne(object).then((result) => {
                     resolve();
                 }).catch((err) => {
@@ -106,6 +108,8 @@ class MongoDBDataSourceImpl {
     deleteMany(collection, filter) {
         return new Promise((resolve, logger) => {
             this.getDatabase().then((db) => {
+                console.log(`Collection ${collection} removing many with filter`);
+                console.log(filter);
                 db.collection(collection).deleteMany(filter).then((result) => {
                     resolve();
                 }).catch((err) => {
@@ -121,8 +125,12 @@ class MongoDBDataSourceImpl {
             if (filter) {
                 localFilter = filter;
             }
+            console.log(`Collection ${collection} finding with filter`);
+            console.log(filter);
             this.getDatabase().then((db) => {
                 if (sort) {
+                    console.log(`Collection ${collection} finding with filter and sorting`);
+                    console.log(sort);
                     db.collection(collection).find(localFilter).sort(sort).toArray().then((result) => {
                         resolve(result);
                     }).catch((err) => {
@@ -144,6 +152,8 @@ class MongoDBDataSourceImpl {
     findOne(collection, filter) {
         return new Promise((resolve, logger) => {
             this.getDatabase().then((db) => {
+                console.log(`Collection ${collection} finding one with filter`);
+                console.log(filter);
                 db.collection(collection).find(filter).toArray().then((result) => {
                     if (result.length > 0) {
                         resolve(result[0]);
@@ -161,6 +171,8 @@ class MongoDBDataSourceImpl {
     insertMany(collection, objects) {
         return new Promise((resolve, logger) => {
             this.getDatabase().then((db) => {
+                console.log(`Collection ${collection} inserting many`);
+                console.log(objects);
                 db.collection(collection).insertMany(objects).then((result) => {
                     resolve();
                 }).catch((err) => {
@@ -173,6 +185,8 @@ class MongoDBDataSourceImpl {
     insertOne(collection, object) {
         return new Promise((resolve, logger) => {
             this.getDatabase().then((db) => {
+                console.log(`Collection ${collection} inserting one`);
+                console.log(object);
                 db.collection(collection).insertOne(object).then((result) => {
                     resolve();
                 }).catch((err) => {
@@ -185,6 +199,8 @@ class MongoDBDataSourceImpl {
     replaceOne(collection, object) {
         return new Promise((resolve, logger) => {
             this.getDatabase().then((db) => {
+                console.log(`Collection ${collection} replacing one`);
+                console.log(object);
                 db.collection(collection).replaceOne({ _id: object._id }, object).then((result) => {
                     resolve();
                 }).catch((err) => {
