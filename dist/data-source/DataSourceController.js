@@ -38,7 +38,10 @@ class DataSourceController {
         return new Promise((resolve, reject) => {
             this.getPrimaryDataSource().deleteCompositeArrayElement(collection, parentObjectKey, propertyName, childObjectKey).then((results) => {
                 this.controllerConfigs.forEach((config) => {
-                    config.source.deleteCompositeArrayElement(collection, parentObjectKey, propertyName, childObjectKey);
+                    config.source.deleteCompositeArrayElement(collection, parentObjectKey, propertyName, childObjectKey).then((childResults) => {
+                    }).catch((err) => {
+                        console.log(err);
+                    });
                 });
                 resolve(results);
             }).catch((err) => {
@@ -50,7 +53,10 @@ class DataSourceController {
         return new Promise((resolve, reject) => {
             this.getPrimaryDataSource().deleteOne(collection, object).then((results) => {
                 this.controllerConfigs.forEach((config) => {
-                    config.source.deleteOne(collection, object);
+                    config.source.deleteOne(collection, object).then((childResults) => {
+                    }).catch((err) => {
+                        console.log(err);
+                    });
                 });
                 resolve(results);
             }).catch((err) => {
@@ -62,7 +68,10 @@ class DataSourceController {
         return new Promise((resolve, reject) => {
             this.getPrimaryDataSource().deleteMany(collection, filter).then((results) => {
                 this.controllerConfigs.forEach((config) => {
-                    config.source.deleteMany(collection, filter);
+                    config.source.deleteMany(collection, filter).then((childResults) => {
+                    }).catch((err) => {
+                        console.log(err);
+                    });
                 });
                 resolve(results);
             }).catch((err) => {
@@ -92,7 +101,10 @@ class DataSourceController {
         return new Promise((resolve, reject) => {
             this.getPrimaryDataSource().insertCompositeArrayElement(collection, parentObjectKey, propertyName, childObject).then((results) => {
                 this.controllerConfigs.forEach((config) => {
-                    config.source.insertCompositeArrayElement(collection, parentObjectKey, propertyName, childObject);
+                    config.source.insertCompositeArrayElement(collection, parentObjectKey, propertyName, childObject).then((childResults) => {
+                    }).catch((err) => {
+                        console.log(err);
+                    });
                 });
                 resolve(results);
             }).catch((err) => {
@@ -104,7 +116,10 @@ class DataSourceController {
         return new Promise((resolve, reject) => {
             this.getPrimaryDataSource().insertMany(collection, objects).then((results) => {
                 this.controllerConfigs.forEach((config) => {
-                    config.source.insertMany(collection, objects);
+                    config.source.insertMany(collection, objects).then((childResults) => {
+                    }).catch((err) => {
+                        console.log(err);
+                    });
                 });
                 resolve(results);
             }).catch((err) => {
@@ -116,7 +131,10 @@ class DataSourceController {
         return new Promise((resolve, reject) => {
             this.getPrimaryDataSource().insertOne(collection, object).then((results) => {
                 this.controllerConfigs.forEach((config) => {
-                    config.source.insertOne(collection, object);
+                    config.source.insertOne(collection, object).then((childResults) => {
+                    }).catch((err) => {
+                        console.log(err);
+                    });
                 });
                 resolve(results);
             }).catch((err) => {
@@ -128,7 +146,10 @@ class DataSourceController {
         return new Promise((resolve, reject) => {
             this.getPrimaryDataSource().replaceCompositeArrayElement(collection, parentObjectKey, propertyName, childObject).then((results) => {
                 this.controllerConfigs.forEach((config) => {
-                    config.source.replaceCompositeArrayElement(collection, parentObjectKey, propertyName, childObject);
+                    config.source.replaceCompositeArrayElement(collection, parentObjectKey, propertyName, childObject).then((childResults) => {
+                    }).catch((err) => {
+                        console.log(err);
+                    });
                 });
                 resolve(results);
             }).catch((err) => {
@@ -141,7 +162,10 @@ class DataSourceController {
         return new Promise((resolve, reject) => {
             this.getPrimaryDataSource().replaceCompositeElement(collection, parentObjectKey, propertyName, childObject).then((results) => {
                 this.controllerConfigs.forEach((config) => {
-                    config.source.replaceCompositeElement(collection, parentObjectKey, propertyName, childObject);
+                    config.source.replaceCompositeElement(collection, parentObjectKey, propertyName, childObject).then((childResults) => {
+                    }).catch((err) => {
+                        console.log(err);
+                    });
                 });
                 resolve(results);
             }).catch((err) => {
@@ -153,7 +177,10 @@ class DataSourceController {
         return new Promise((resolve, reject) => {
             this.getPrimaryDataSource().replaceOne(collection, object).then((results) => {
                 this.controllerConfigs.forEach((config) => {
-                    config.source.replaceOne(collection, object);
+                    config.source.replaceOne(collection, object).then((childResults) => {
+                    }).catch((err) => {
+                        console.log(err);
+                    });
                 });
                 resolve(results);
             }).catch((err) => {
@@ -165,7 +192,10 @@ class DataSourceController {
         return new Promise((resolve, reject) => {
             this.replaceOne(collection, object).then((results) => {
                 this.controllerConfigs.forEach((config) => {
-                    config.source.replaceOne(collection, object);
+                    config.source.replaceOne(collection, object).then((childResults) => {
+                    }).catch((err) => {
+                        console.log(err);
+                    });
                 });
                 resolve(results);
             }).catch((err) => {
@@ -177,7 +207,10 @@ class DataSourceController {
         return new Promise((resolve, reject) => {
             this.getPrimaryDataSource().deleteAll(collection).then((results) => {
                 this.controllerConfigs.forEach((config) => {
-                    config.source.deleteAll(collection);
+                    config.source.deleteAll(collection).then((childResults) => {
+                    }).catch((err) => {
+                        console.log(err);
+                    });
                 });
                 resolve(results);
             }).catch((err) => {
