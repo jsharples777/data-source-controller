@@ -142,18 +142,26 @@ export class MongoDBDataSourceImpl implements DataSource {
             if (filter) {
                 localFilter = filter;
             }
-            let localSort = {};
-            if (sort) {
-                localSort = sort;
-            }
-            this.getDatabase().then((db) => {
 
-                db.collection(collection).find(localFilter).sort(localSort).toArray().then((result) => {
-                    resolve(result);
-                }).catch((err) => {
-                    logger(err);
-                    reject(err);
-                })
+            this.getDatabase().then((db) => {
+                if (sort) {
+                    db.collection(collection).find(localFilter).sort(sort).toArray().then((result) => {
+                        resolve(result);
+                    }).catch((err) => {
+                        logger(err);
+                        reject(err);
+                    })
+                }
+                else {
+                    db.collection(collection).find(localFilter).toArray().then((result) => {
+                        resolve(result);
+                    }).catch((err) => {
+                        logger(err);
+                        reject(err);
+                    })
+
+                }
+
 
 
             });
