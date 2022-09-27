@@ -1,3 +1,5 @@
+import {Util} from "./Util";
+
 export type Views = {
     name:string,
     view:View
@@ -32,7 +34,7 @@ export abstract class View {
                         }
                     })
                 }
-                resolve(results);
+                resolve(Util.copyObject(results));
             });
         });
     }}
