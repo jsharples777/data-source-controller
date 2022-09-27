@@ -1,7 +1,13 @@
 import {DataSource} from "./DataSource";
-import {FileSystemDB, FileSystemDBHelper} from "file-system-database";
+import {FileSystemDB, FileSystemDBHelper, SearchItem, SortOrderItem} from "file-system-database";
+import {derivedField, View, Views} from "./View";
+import {FileSystemView} from "./FileSystemView";
+
+
 
 export class FileSystemDBDataSourceImpl implements DataSource {
+    private views:Views[] = [];
+
     constructor() {
         FileSystemDB.getInstance().initialise();
     }
@@ -145,6 +151,32 @@ export class FileSystemDBDataSourceImpl implements DataSource {
             resolve();
 
         })
+    }
+
+    createView(collection: string, name: string, fields: string[], search?: any, sort?: any, derivedFields?: derivedField[]): View {
+        let fsView = FileSystemDB.getInstance().getView(name);
+        if (!fsView) {
+            let localSearch:SearchItem[]|undefined = undefined;
+            if (search) {
+                localSearch = FileSystemDBHelper.convertFilterIntoFind(search);
+            }
+            let localSort:SortOrderItem[]|undefined = undefined;
+            if (sort) {
+                localSort = FileSystemDBHelper.convertFilterIntoSort(sort);
+            }
+            fsView = FileSystemDB.getInstance().addView(collection,name,fields, localSearch, localSort);
+            const view = new FileSystemView(name, fsView, derivedFields);
+            this.views.push({
+                name,
+                view
+            });
+        }
+        return this.view(name);
+    }
+
+    view(name: string): View {
+       const foundIndex = this.views.findIndex((view) => view.name === name);
+       return this.views[foundIndex].view;
     }
 
 }
