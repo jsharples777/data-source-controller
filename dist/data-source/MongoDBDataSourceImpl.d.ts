@@ -1,6 +1,8 @@
 import { DataSource } from "./DataSource";
 import { Db } from "mongodb";
+import { derivedField, View } from "./View";
 export declare class MongoDBDataSourceImpl implements DataSource {
+    private views;
     constructor();
     shutdown(): Promise<void>;
     insertCompositeArrayElement(collection: string, parentObjectKey: any, propertyName: string, childObject: any): Promise<void>;
@@ -18,4 +20,6 @@ export declare class MongoDBDataSourceImpl implements DataSource {
     getDatabase(): Promise<Db>;
     deleteAll(collection: string): Promise<void>;
     collections(): Promise<string[]>;
+    createView(collection: string, name: string, fields: string[], search?: any, sort?: any, derivedFields?: derivedField[]): View;
+    view(name: string): View;
 }

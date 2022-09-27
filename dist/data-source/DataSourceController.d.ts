@@ -1,10 +1,15 @@
+import { Collection } from './Collection';
 import { DataSource } from "./DataSource";
+import { derivedField, View } from './View';
 export declare class DataSourceController implements DataSource {
     private static _instance;
     static getInstance(): DataSourceController;
     private controllerConfigs;
     private primarySource;
     private constructor();
+    createView(collection: string, name: string, fields: string[], search?: any, sort?: any, derivedFields?: derivedField[]): View;
+    view(name: string): View;
+    collection(name: string): Collection;
     addDataSource(source: DataSource, isPrimary: boolean): void;
     protected getPrimaryDataSource(): DataSource;
     deleteCompositeArrayElement(collection: string, parentObjectKey: any, propertyName: string, childObjectKey: any): Promise<void>;

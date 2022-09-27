@@ -2,11 +2,16 @@ import {DataSource} from "./DataSource";
 import {MongoDataSource} from "mongo-access-jps";
 import debug from 'debug';
 import {Db} from "mongodb";
+import {derivedField, View, Views} from "./View";
+import {FileSystemDB, FileSystemDBHelper, SearchItem, SortOrderItem} from "file-system-database";
+import {FileSystemView} from "./FileSystemView";
+import {MongoView} from "./MongoView";
 
 const logger = debug('mongo-data-source-impl');
 const errorLogger = debug('mongo-data-source-impl-error');
 
 export class MongoDBDataSourceImpl implements DataSource {
+    private views:Views[] = [];
 
     constructor() {
         MongoDataSource.getInstance().initialise();
@@ -303,6 +308,24 @@ export class MongoDBDataSourceImpl implements DataSource {
                 })
             });
         });
+    }
+
+    createView(collection: string, name: string, fields: string[], search?: any, sort?: any, derivedFields?: derivedField[]): View {
+        const foundIndex = this.views.findIndex((view) => view.name === name);
+        if (foundIndex < 0) {
+            const view = new MongoView(this,collection,name,fields, search, sort, derivedFields);
+            this.views.push({
+                name,
+                view
+            });
+        }
+
+        return this.view(name);
+    }
+
+    view(name: string): View {
+        const foundIndex = this.views.findIndex((view) => view.name === name);
+        return this.views[foundIndex].view;
     }
 
 }

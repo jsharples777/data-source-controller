@@ -2,8 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FileSystemDBDataSourceImpl = void 0;
 const file_system_database_1 = require("file-system-database");
+const FileSystemView_1 = require("./FileSystemView");
 class FileSystemDBDataSourceImpl {
     constructor() {
+        this.views = [];
         file_system_database_1.FileSystemDB.getInstance().initialise();
     }
     collections() {
@@ -131,6 +133,30 @@ class FileSystemDBDataSourceImpl {
             file_system_database_1.FileSystemDB.getInstance().shutdown();
             resolve();
         });
+    }
+    createView(collection, name, fields, search, sort, derivedFields) {
+        let fsView = file_system_database_1.FileSystemDB.getInstance().getView(name);
+        if (!fsView) {
+            let localSearch = undefined;
+            if (search) {
+                localSearch = file_system_database_1.FileSystemDBHelper.convertFilterIntoFind(search);
+            }
+            let localSort = undefined;
+            if (sort) {
+                localSort = file_system_database_1.FileSystemDBHelper.convertFilterIntoSort(sort);
+            }
+            fsView = file_system_database_1.FileSystemDB.getInstance().addView(collection, name, fields, localSearch, localSort);
+            const view = new FileSystemView_1.FileSystemView(name, fsView, derivedFields);
+            this.views.push({
+                name,
+                view
+            });
+        }
+        return this.view(name);
+    }
+    view(name) {
+        const foundIndex = this.views.findIndex((view) => view.name === name);
+        return this.views[foundIndex].view;
     }
 }
 exports.FileSystemDBDataSourceImpl = FileSystemDBDataSourceImpl;

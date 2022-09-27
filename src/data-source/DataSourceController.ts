@@ -1,5 +1,7 @@
 import debug from 'debug';
+import { Collection } from './Collection';
 import {DataSource} from "./DataSource";
+import { derivedField, View } from './View';
 
 
 const logger = debug('data-source-controller');
@@ -24,6 +26,18 @@ export class DataSourceController implements DataSource {
     private primarySource: DataSource | undefined = undefined;
 
     private constructor() {
+    }
+
+    createView(collection: string, name: string, fields: string[], search?: any, sort?: any, derivedFields?: derivedField[]): View {
+        return this.getPrimaryDataSource().createView(collection,name, fields, search, sort, derivedFields);
+    }
+
+    view(name: string): View {
+        return this.getPrimaryDataSource().view(name);
+    }
+
+    public collection(name:string):Collection {
+        return new Collection(name);
     }
 
 
@@ -317,5 +331,7 @@ export class DataSourceController implements DataSource {
         });
 
     }
+
+
 
 }

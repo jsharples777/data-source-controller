@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DataSourceController = void 0;
 const debug_1 = __importDefault(require("debug"));
+const Collection_1 = require("./Collection");
 const logger = debug_1.default('data-source-controller');
 class DataSourceController {
     constructor() {
@@ -16,6 +17,15 @@ class DataSourceController {
             DataSourceController._instance = new DataSourceController();
         }
         return DataSourceController._instance;
+    }
+    createView(collection, name, fields, search, sort, derivedFields) {
+        return this.getPrimaryDataSource().createView(collection, name, fields, search, sort, derivedFields);
+    }
+    view(name) {
+        return this.getPrimaryDataSource().view(name);
+    }
+    collection(name) {
+        return new Collection_1.Collection(name);
     }
     addDataSource(source, isPrimary) {
         if (isPrimary) {

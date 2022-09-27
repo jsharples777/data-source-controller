@@ -15,10 +15,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MongoDBDataSourceImpl = void 0;
 const mongo_access_jps_1 = require("mongo-access-jps");
 const debug_1 = __importDefault(require("debug"));
+const MongoView_1 = require("./MongoView");
 const logger = debug_1.default('mongo-data-source-impl');
 const errorLogger = debug_1.default('mongo-data-source-impl-error');
 class MongoDBDataSourceImpl {
     constructor() {
+        this.views = [];
         mongo_access_jps_1.MongoDataSource.getInstance().initialise();
     }
     shutdown() {
@@ -256,6 +258,21 @@ class MongoDBDataSourceImpl {
                 });
             });
         });
+    }
+    createView(collection, name, fields, search, sort, derivedFields) {
+        const foundIndex = this.views.findIndex((view) => view.name === name);
+        if (foundIndex < 0) {
+            const view = new MongoView_1.MongoView(this, collection, name, fields, search, sort, derivedFields);
+            this.views.push({
+                name,
+                view
+            });
+        }
+        return this.view(name);
+    }
+    view(name) {
+        const foundIndex = this.views.findIndex((view) => view.name === name);
+        return this.views[foundIndex].view;
     }
 }
 exports.MongoDBDataSourceImpl = MongoDBDataSourceImpl;

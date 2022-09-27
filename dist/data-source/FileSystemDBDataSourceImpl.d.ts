@@ -1,5 +1,7 @@
 import { DataSource } from "./DataSource";
+import { derivedField, View } from "./View";
 export declare class FileSystemDBDataSourceImpl implements DataSource {
+    private views;
     constructor();
     collections(): Promise<string[]>;
     deleteAll(collection: string): Promise<void>;
@@ -16,4 +18,6 @@ export declare class FileSystemDBDataSourceImpl implements DataSource {
     replaceCompositeArrayElement(collection: string, parentObjectKey: any, propertyName: string, childObject: any): Promise<void>;
     replaceCompositeElement(collection: string, parentObjectKey: any, propertyName: string, childObject: any): Promise<void>;
     shutdown(): Promise<void>;
+    createView(collection: string, name: string, fields: string[], search?: any, sort?: any, derivedFields?: derivedField[]): View;
+    view(name: string): View;
 }

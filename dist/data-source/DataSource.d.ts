@@ -1,3 +1,4 @@
+import { derivedField, View } from "./View";
 export interface DataSource {
     find(collection: string, filter?: any, sort?: any): Promise<any[]>;
     findOne(collection: string, filter: any): Promise<any>;
@@ -14,4 +15,6 @@ export interface DataSource {
     deleteCompositeArrayElement(collection: string, parentObjectKey: any, propertyName: string, childObjectKey: any): Promise<void>;
     replaceCompositeElement(collection: string, parentObjectKey: any, propertyName: string, childObject: any): Promise<void>;
     shutdown(): Promise<void>;
+    createView(collection: string, name: string, fields: string[], search?: any, sort?: any, derivedFields?: derivedField[]): View;
+    view(name: string): View;
 }
