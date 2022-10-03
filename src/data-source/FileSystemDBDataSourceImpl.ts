@@ -65,12 +65,13 @@ export class FileSystemDBDataSourceImpl implements DataSource {
     findOne(collection: string, filter: any): Promise<any> {
         return new Promise((resolve, reject) => {
             let result:any|undefined = undefined;
-            this.find(collection,filter).then((results) => {
-                if (results.length > 0) {
-                    result = results[0];
-                }
-                resolve(result);
-            });
+            const col = FileSystemDB.getInstance().collection(collection);
+            let cursor = col.find(filter);
+            const results = cursor.toArray();
+            if (results.length > 0) {
+                result = results[0];
+            }
+            resolve(result);
         });
     }
 

@@ -58,12 +58,13 @@ class FileSystemDBDataSourceImpl {
     findOne(collection, filter) {
         return new Promise((resolve, reject) => {
             let result = undefined;
-            this.find(collection, filter).then((results) => {
-                if (results.length > 0) {
-                    result = results[0];
-                }
-                resolve(result);
-            });
+            const col = file_system_database_1.FileSystemDB.getInstance().collection(collection);
+            let cursor = col.find(filter);
+            const results = cursor.toArray();
+            if (results.length > 0) {
+                result = results[0];
+            }
+            resolve(result);
         });
     }
     insertMany(collection, objects) {
