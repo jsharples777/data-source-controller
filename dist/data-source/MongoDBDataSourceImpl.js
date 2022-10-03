@@ -176,6 +176,25 @@ class MongoDBDataSourceImpl {
             });
         });
     }
+    findByKey(collection, key) {
+        return new Promise((resolve, logger) => {
+            this.getDatabase().then((db) => {
+                logger(`Collection ${collection} finding one with key`);
+                logger(key);
+                db.collection(collection).find({ _id: key }).toArray().then((result) => {
+                    if (result.length > 0) {
+                        resolve(result[0]);
+                    }
+                    else {
+                        resolve(undefined);
+                    }
+                }).catch((err) => {
+                    logger(err);
+                    errorLogger(err);
+                });
+            });
+        });
+    }
     insertMany(collection, objects) {
         return new Promise((resolve, logger) => {
             this.getDatabase().then((db) => {

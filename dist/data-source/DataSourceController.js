@@ -107,6 +107,15 @@ class DataSourceController {
             });
         });
     }
+    findByKey(collection, key) {
+        return new Promise((resolve, reject) => {
+            this.getPrimaryDataSource().findByKey(collection, key).then((results) => {
+                resolve(results);
+            }).catch((err) => {
+                logger(err);
+            });
+        });
+    }
     insertCompositeArrayElement(collection, parentObjectKey, propertyName, childObject) {
         return new Promise((resolve, reject) => {
             this.getPrimaryDataSource().insertCompositeArrayElement(collection, parentObjectKey, propertyName, childObject).then((results) => {

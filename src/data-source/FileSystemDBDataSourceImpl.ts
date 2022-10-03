@@ -75,6 +75,15 @@ export class FileSystemDBDataSourceImpl implements DataSource {
         });
     }
 
+    findByKey(collection: string, key: any): Promise<any> {
+        return new Promise((resolve, reject) => {
+            let result:any|undefined = undefined;
+            const col = FileSystemDB.getInstance().collection(collection);
+            result = col.findByKey(key);
+            resolve(result);
+        });
+    }
+
     insertMany(collection: string, objects: any[]): Promise<void> {
         return new Promise((resolve, reject) => {
             const col = FileSystemDB.getInstance().collection(collection);

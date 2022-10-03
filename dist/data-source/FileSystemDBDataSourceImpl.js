@@ -67,6 +67,14 @@ class FileSystemDBDataSourceImpl {
             resolve(result);
         });
     }
+    findByKey(collection, key) {
+        return new Promise((resolve, reject) => {
+            let result = undefined;
+            const col = file_system_database_1.FileSystemDB.getInstance().collection(collection);
+            result = col.findByKey(key);
+            resolve(result);
+        });
+    }
     insertMany(collection, objects) {
         return new Promise((resolve, reject) => {
             const col = file_system_database_1.FileSystemDB.getInstance().collection(collection);

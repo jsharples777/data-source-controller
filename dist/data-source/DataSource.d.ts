@@ -2,6 +2,7 @@ import { derivedField, View } from "./View";
 export interface DataSource {
     find(collection: string, filter?: any, sort?: any): Promise<any[]>;
     findOne(collection: string, filter: any): Promise<any>;
+    findByKey(collection: string, key: any): Promise<any>;
     insertOne(collection: string, object: any): Promise<void>;
     insertMany(collection: string, objects: any[]): Promise<void>;
     replaceOne(collection: string, object: any): Promise<void>;
