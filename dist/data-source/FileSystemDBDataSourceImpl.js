@@ -58,17 +58,12 @@ class FileSystemDBDataSourceImpl {
     findOne(collection, filter) {
         return new Promise((resolve, reject) => {
             let result = undefined;
-            const col = file_system_database_1.FileSystemDB.getInstance().collection(collection);
-            const keyField = col.getKeyFieldName();
-            // assume filter in format { keyField: keyValue }
-            const key = filter[keyField];
-            if (key) {
-                result = col.findByKey(key);
+            this.find(collection, filter).then((results) => {
+                if (results.length > 0) {
+                    result = results[0];
+                }
                 resolve(result);
-            }
-            else {
-                reject(`No key supplied in filter ${filter}`);
-            }
+            });
         });
     }
     insertMany(collection, objects) {
