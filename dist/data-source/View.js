@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.View = void 0;
+const Util_1 = require("./Util");
 class View {
     constructor(name, derivedFields) {
         this.name = name;
@@ -21,7 +22,7 @@ class View {
                         }
                     });
                 }
-                resolve(results);
+                resolve(Util_1.Util.copyObject(results));
             });
         });
     }
