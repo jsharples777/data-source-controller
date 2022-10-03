@@ -9,6 +9,7 @@ export declare class FileSystemDBDataSourceImpl implements DataSource {
     deleteOne(collection: string, object: any): Promise<void>;
     find(collection: string, filter?: any, sort?: any): Promise<any[]>;
     findOne(collection: string, filter: any): Promise<any>;
+    findByKey(collection: string, key: any): Promise<any>;
     insertMany(collection: string, objects: any[]): Promise<void>;
     insertOne(collection: string, object: any): Promise<void>;
     replaceOne(collection: string, object: any): Promise<void>;

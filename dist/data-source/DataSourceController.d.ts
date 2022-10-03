@@ -17,6 +17,7 @@ export declare class DataSourceController implements DataSource {
     deleteMany(collection: string, filter: any): Promise<void>;
     find(collection: string, filter?: any, sort?: any): Promise<any[]>;
     findOne(collection: string, filter: any): Promise<any>;
+    findByKey(collection: string, key: any): Promise<any>;
     insertCompositeArrayElement(collection: string, parentObjectKey: any, propertyName: string, childObject: any): Promise<void>;
     insertMany(collection: string, objects: any[]): Promise<void>;
     insertOne(collection: string, object: any): Promise<void>;

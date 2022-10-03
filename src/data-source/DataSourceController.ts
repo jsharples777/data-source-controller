@@ -142,6 +142,18 @@ export class DataSourceController implements DataSource {
 
     }
 
+    findByKey(collection: string, key: any): Promise<any> {
+        return new Promise((resolve, reject) => {
+            this.getPrimaryDataSource().findByKey(collection, key).then((results) => {
+                resolve(results);
+            }).catch((err) => {
+                logger(err);
+            });
+
+        });
+
+    }
+
     insertCompositeArrayElement(collection: string, parentObjectKey: any, propertyName: string, childObject: any): Promise<void> {
         return new Promise((resolve, reject) => {
             this.getPrimaryDataSource().insertCompositeArrayElement(collection, parentObjectKey, propertyName, childObject).then((results) => {

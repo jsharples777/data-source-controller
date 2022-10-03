@@ -59,16 +59,20 @@ class FileSystemDBDataSourceImpl {
         return new Promise((resolve, reject) => {
             let result = undefined;
             const col = file_system_database_1.FileSystemDB.getInstance().collection(collection);
-            const keyField = col.getKeyFieldName();
-            // assume filter in format { keyField: keyValue }
-            const key = filter[keyField];
-            if (key) {
-                result = col.findByKey(key);
-                resolve(result);
+            let cursor = col.find(filter);
+            const results = cursor.toArray();
+            if (results.length > 0) {
+                result = results[0];
             }
-            else {
-                reject(`No key supplied in filter ${filter}`);
-            }
+            resolve(result);
+        });
+    }
+    findByKey(collection, key) {
+        return new Promise((resolve, reject) => {
+            let result = undefined;
+            const col = file_system_database_1.FileSystemDB.getInstance().collection(collection);
+            result = col.findByKey(key);
+            resolve(result);
         });
     }
     insertMany(collection, objects) {
