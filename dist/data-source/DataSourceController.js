@@ -25,7 +25,7 @@ class DataSourceController {
         return this.getPrimaryDataSource().view(name);
     }
     collection(name) {
-        return new Collection_1.Collection(name);
+        return new Collection_1.Collection(name, this);
     }
     addDataSource(source, isPrimary) {
         if (isPrimary) {
@@ -263,4 +263,6 @@ class DataSourceController {
     }
 }
 exports.DataSourceController = DataSourceController;
+DataSourceController.FIELD_Created = 'created';
+DataSourceController.FIELD_Modified = 'modified';
 //# sourceMappingURL=DataSourceController.js.map

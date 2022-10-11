@@ -1,6 +1,8 @@
+import { DataSourceController } from "./DataSourceController";
 export declare class Collection {
     private name;
-    constructor(name: string);
+    private controller;
+    constructor(name: string, controller: DataSourceController);
     find(filter?: any, sort?: any): Promise<any[]>;
     findOne(filter: any): Promise<any>;
     insertOne(object: any): Promise<void>;

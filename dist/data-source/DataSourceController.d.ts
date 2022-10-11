@@ -3,6 +3,8 @@ import { DataSource } from "./DataSource";
 import { derivedField, View } from './View';
 export declare class DataSourceController implements DataSource {
     private static _instance;
+    static FIELD_Created: string;
+    static FIELD_Modified: string;
     static getInstance(): DataSourceController;
     private controllerConfigs;
     private primarySource;

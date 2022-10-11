@@ -1,8 +1,13 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FileSystemDBDataSourceImpl = void 0;
 const file_system_database_1 = require("file-system-database");
 const FileSystemView_1 = require("./FileSystemView");
+const moment_1 = __importDefault(require("moment"));
+const DataSourceController_1 = require("./DataSourceController");
 class FileSystemDBDataSourceImpl {
     constructor() {
         this.views = [];
@@ -77,10 +82,13 @@ class FileSystemDBDataSourceImpl {
     }
     insertMany(collection, objects) {
         return new Promise((resolve, reject) => {
+            const now = parseInt(moment_1.default().format('YYYYMMDDHHmmss'));
             const col = file_system_database_1.FileSystemDB.getInstance().collection(collection);
             const keyField = col.getKeyFieldName();
             if (objects) {
                 objects.forEach((object) => {
+                    object[DataSourceController_1.DataSourceController.FIELD_Modified] = now;
+                    object[DataSourceController_1.DataSourceController.FIELD_Created] = now;
                     col.insertObject(object[keyField], object);
                 });
             }
@@ -89,8 +97,11 @@ class FileSystemDBDataSourceImpl {
     }
     insertOne(collection, object) {
         return new Promise((resolve, reject) => {
+            const now = parseInt(moment_1.default().format('YYYYMMDDHHmmss'));
             const col = file_system_database_1.FileSystemDB.getInstance().collection(collection);
             const keyField = col.getKeyFieldName();
+            object[DataSourceController_1.DataSourceController.FIELD_Modified] = now;
+            object[DataSourceController_1.DataSourceController.FIELD_Created] = now;
             col.insertObject(object[keyField], object);
             resolve();
         });
@@ -100,20 +111,30 @@ class FileSystemDBDataSourceImpl {
     }
     updateOne(collection, object) {
         return new Promise((resolve, reject) => {
+            const now = parseInt(moment_1.default().format('YYYYMMDDHHmmss'));
             const col = file_system_database_1.FileSystemDB.getInstance().collection(collection);
             const keyField = col.getKeyFieldName();
+            object[DataSourceController_1.DataSourceController.FIELD_Modified] = now;
             col.upsertObject(object[keyField], object);
             resolve();
         });
     }
     deleteCompositeArrayElement(collection, parentObjectKey, propertyName, childObjectKey) {
         return new Promise((resolve, reject) => {
+            const parentObj = file_system_database_1.FileSystemDB.getInstance().collection(collection).findByKey(parentObjectKey);
+            const now = parseInt(moment_1.default().format('YYYYMMDDHHmmss'));
+            parentObj[DataSourceController_1.DataSourceController.FIELD_Modified] = now;
+            file_system_database_1.FileSystemDB.getInstance().collection(collection).upsertObject(parentObjectKey, parentObj);
             file_system_database_1.FileSystemDBHelper.removeCompositeArrayElement(collection, propertyName, parentObjectKey, childObjectKey);
             resolve();
         });
     }
     insertCompositeArrayElement(collection, parentObjectKey, propertyName, childObject) {
         return new Promise((resolve, reject) => {
+            const parentObj = file_system_database_1.FileSystemDB.getInstance().collection(collection).findByKey(parentObjectKey);
+            const now = parseInt(moment_1.default().format('YYYYMMDDHHmmss'));
+            parentObj[DataSourceController_1.DataSourceController.FIELD_Modified] = now;
+            file_system_database_1.FileSystemDB.getInstance().collection(collection).upsertObject(parentObjectKey, parentObj);
             file_system_database_1.FileSystemDBHelper.insertElementIntoCompositeArray(collection, propertyName, parentObjectKey, childObject);
             resolve();
         });
@@ -122,12 +143,22 @@ class FileSystemDBDataSourceImpl {
         return new Promise((resolve, reject) => {
             const col = file_system_database_1.FileSystemDB.getInstance().collection(collection);
             const keyField = col.getKeyFieldName();
+            const parentObj = col.findByKey(parentObjectKey);
+            const now = parseInt(moment_1.default().format('YYYYMMDDHHmmss'));
+            parentObj[DataSourceController_1.DataSourceController.FIELD_Modified] = now;
+            col.upsertObject(parentObjectKey, parentObj);
             file_system_database_1.FileSystemDBHelper.updateCompositeArrayElement(collection, propertyName, parentObjectKey, childObject[keyField], childObject);
             resolve();
         });
     }
     replaceCompositeElement(collection, parentObjectKey, propertyName, childObject) {
         return new Promise((resolve, reject) => {
+            const col = file_system_database_1.FileSystemDB.getInstance().collection(collection);
+            const keyField = col.getKeyFieldName();
+            const parentObj = col.findByKey(parentObjectKey);
+            const now = parseInt(moment_1.default().format('YYYYMMDDHHmmss'));
+            parentObj[DataSourceController_1.DataSourceController.FIELD_Modified] = now;
+            col.upsertObject(parentObjectKey, parentObj);
             file_system_database_1.FileSystemDBHelper.updateCompositeObject(collection, propertyName, parentObjectKey, childObject);
             resolve();
         });
