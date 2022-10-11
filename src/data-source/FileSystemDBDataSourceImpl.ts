@@ -2,6 +2,8 @@ import {DataSource} from "./DataSource";
 import {FileSystemDB, FileSystemDBHelper, SearchItem, SortOrderItem} from "file-system-database";
 import {derivedField, View, Views} from "./View";
 import {FileSystemView} from "./FileSystemView";
+import moment from "moment";
+import {DataSourceController} from "./DataSourceController";
 
 
 
@@ -86,10 +88,15 @@ export class FileSystemDBDataSourceImpl implements DataSource {
 
     insertMany(collection: string, objects: any[]): Promise<void> {
         return new Promise((resolve, reject) => {
+            const now = parseInt(moment().format('YYYYMMDDHHmmss'));
             const col = FileSystemDB.getInstance().collection(collection);
             const keyField = col.getKeyFieldName();
             if (objects) {
                 objects.forEach((object) => {
+
+
+                    object[DataSourceController.FIELD_Modified] = now;
+                    object[DataSourceController.FIELD_Created] = now;
                     col.insertObject(object[keyField],object);
                 })
             }
@@ -99,8 +106,11 @@ export class FileSystemDBDataSourceImpl implements DataSource {
 
     insertOne(collection: string, object: any): Promise<void> {
         return new Promise((resolve, reject) => {
+            const now = parseInt(moment().format('YYYYMMDDHHmmss'));
             const col = FileSystemDB.getInstance().collection(collection);
             const keyField = col.getKeyFieldName();
+            object[DataSourceController.FIELD_Modified] = now;
+            object[DataSourceController.FIELD_Created] = now;
             col.insertObject(object[keyField],object);
             resolve();
         });
@@ -112,8 +122,10 @@ export class FileSystemDBDataSourceImpl implements DataSource {
 
     updateOne(collection: string, object: any): Promise<void> {
         return new Promise((resolve, reject) => {
+            const now = parseInt(moment().format('YYYYMMDDHHmmss'));
             const col = FileSystemDB.getInstance().collection(collection);
             const keyField = col.getKeyFieldName();
+            object[DataSourceController.FIELD_Modified] = now;
             col.upsertObject(object[keyField],object);
             resolve();
         });
@@ -121,6 +133,10 @@ export class FileSystemDBDataSourceImpl implements DataSource {
 
     deleteCompositeArrayElement(collection: string, parentObjectKey: any, propertyName: string, childObjectKey: any): Promise<void> {
         return new Promise((resolve, reject) => {
+            const parentObj = FileSystemDB.getInstance().collection(collection).findByKey(parentObjectKey);
+            const now = parseInt(moment().format('YYYYMMDDHHmmss'));
+            parentObj[DataSourceController.FIELD_Modified] = now;
+            FileSystemDB.getInstance().collection(collection).upsertObject(parentObjectKey,parentObj);
             FileSystemDBHelper.removeCompositeArrayElement(collection,propertyName,parentObjectKey,childObjectKey);
             resolve();
         });
@@ -128,6 +144,10 @@ export class FileSystemDBDataSourceImpl implements DataSource {
 
     insertCompositeArrayElement(collection: string, parentObjectKey: any, propertyName: string, childObject: any): Promise<void> {
         return new Promise((resolve, reject) => {
+            const parentObj = FileSystemDB.getInstance().collection(collection).findByKey(parentObjectKey);
+            const now = parseInt(moment().format('YYYYMMDDHHmmss'));
+            parentObj[DataSourceController.FIELD_Modified] = now;
+            FileSystemDB.getInstance().collection(collection).upsertObject(parentObjectKey,parentObj);
             FileSystemDBHelper.insertElementIntoCompositeArray(collection,propertyName,parentObjectKey,childObject);
             resolve();
         });
@@ -137,6 +157,10 @@ export class FileSystemDBDataSourceImpl implements DataSource {
         return new Promise((resolve, reject) => {
             const col = FileSystemDB.getInstance().collection(collection);
             const keyField = col.getKeyFieldName();
+            const parentObj = col.findByKey(parentObjectKey);
+            const now = parseInt(moment().format('YYYYMMDDHHmmss'));
+            parentObj[DataSourceController.FIELD_Modified] = now;
+            col.upsertObject(parentObjectKey,parentObj);
             FileSystemDBHelper.updateCompositeArrayElement(collection,propertyName,parentObjectKey,childObject[keyField],childObject);
             resolve();
         });
@@ -144,6 +168,12 @@ export class FileSystemDBDataSourceImpl implements DataSource {
 
     replaceCompositeElement(collection: string, parentObjectKey: any, propertyName: string, childObject: any): Promise<void> {
         return new Promise((resolve, reject) => {
+            const col = FileSystemDB.getInstance().collection(collection);
+            const keyField = col.getKeyFieldName();
+            const parentObj = col.findByKey(parentObjectKey);
+            const now = parseInt(moment().format('YYYYMMDDHHmmss'));
+            parentObj[DataSourceController.FIELD_Modified] = now;
+            col.upsertObject(parentObjectKey,parentObj);
             FileSystemDBHelper.updateCompositeObject(collection,propertyName,parentObjectKey,childObject);
             resolve();
         });

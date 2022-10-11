@@ -3,9 +3,9 @@ import {MongoDataSource} from "mongo-access-jps";
 import debug from 'debug';
 import {Db} from "mongodb";
 import {derivedField, View, Views} from "./View";
-import {FileSystemDB, FileSystemDBHelper, SearchItem, SortOrderItem} from "file-system-database";
-import {FileSystemView} from "./FileSystemView";
+import {DataSourceController} from "./DataSourceController";
 import {MongoView} from "./MongoView";
+import moment from "moment/moment";
 
 const logger = debug('mongo-data-source-impl');
 const errorLogger = debug('mongo-data-source-impl-error');
@@ -28,11 +28,15 @@ export class MongoDBDataSourceImpl implements DataSource {
         return new Promise((resolve, logger) => {
             let obj: any = {};
             obj[propertyName] = childObject;
+            const now = parseInt(moment().format('YYYYMMDDHHmmss'));
+            let modified:any = {}
+            modified[DataSourceController.FIELD_Modified] = now;
+
             logger(`Inserting into collection ${collection} with new array element for field ${propertyName} with id ${childObject._id}`);
             this.getDatabase().then((db) => {
                 db.collection(collection).updateOne(
                     {_id: parentObjectKey},
-                    {$push: obj}).then((result) => {
+                    {$push: obj,$set:modified}).then((result) => {
                     logger(result);
                     resolve();
                 }).catch((err) => {
@@ -48,6 +52,9 @@ export class MongoDBDataSourceImpl implements DataSource {
         return new Promise((resolve, logger) => {
             let pullObj: any = {};
             pullObj[propertyName] = {_id: childObject._id};
+            const now = parseInt(moment().format('YYYYMMDDHHmmss'));
+            let modified:any = {}
+            modified[DataSourceController.FIELD_Modified] = now;
             logger(`Updating collection ${collection} with updated array element for field ${propertyName} with id ${childObject._id}`);
             this.getDatabase().then((db) => {
                 db.collection(collection).updateOne(
@@ -58,7 +65,7 @@ export class MongoDBDataSourceImpl implements DataSource {
                     obj[propertyName] = childObject;
                     db.collection(collection).updateOne(
                         {_id: parentObjectKey},
-                        {$push: obj}).then((result) => {
+                        {$push: obj,$set:modified}).then((result) => {
                         logger(result);
                         resolve();
                     }).catch((err) => {
@@ -79,11 +86,14 @@ export class MongoDBDataSourceImpl implements DataSource {
             logger(`Updating collection ${collection} removing array element for field ${propertyName} with id ${childObjectKey}`);
             let obj: any = {};
             obj[propertyName] = {_id: childObjectKey};
+            const now = parseInt(moment().format('YYYYMMDDHHmmss'));
+            let modified:any = {}
+            modified[DataSourceController.FIELD_Modified] = now;
             this.getDatabase().then((db) => {
 
                 db.collection(collection).updateOne(
                     {_id: parentObjectKey},
-                    {$pull: obj}).then((result) => {
+                    {$pull: obj,$set:modified}).then((result) => {
                     logger(result);
                     resolve();
                 }).catch((err) => {
@@ -100,6 +110,8 @@ export class MongoDBDataSourceImpl implements DataSource {
             logger(`Updating collection ${collection}  with updated field ${propertyName} with id ${childObject._id}`);
             let obj: any = {};
             obj[propertyName] = childObject;
+            const now = parseInt(moment().format('YYYYMMDDHHmmss'));
+            obj[DataSourceController.FIELD_Modified] = now;
             this.getDatabase().then((db) => {
 
                 db.collection(collection).updateOne(
@@ -237,6 +249,13 @@ export class MongoDBDataSourceImpl implements DataSource {
                 logger(`Collection ${collection} inserting many`);
                 logger(objects);
 
+                const now = parseInt(moment().format('YYYYMMDDHHmmss'));
+                objects.forEach((obj) => {
+                    obj[DataSourceController.FIELD_Modified] = now;
+                    obj[DataSourceController.FIELD_Created] = now;
+                })
+
+
                 db.collection(collection).insertMany(objects).then((result) => {
                     resolve();
                 }).catch((err) => {
@@ -254,6 +273,10 @@ export class MongoDBDataSourceImpl implements DataSource {
             this.getDatabase().then((db) => {
                 logger(`Collection ${collection} inserting one`);
                 logger(object);
+                const now = parseInt(moment().format('YYYYMMDDHHmmss'));
+
+                    object[DataSourceController.FIELD_Modified] = now;
+                    object[DataSourceController.FIELD_Created] = now;
 
                 db.collection(collection).insertOne(object).then((result) => {
                     resolve();
@@ -272,7 +295,9 @@ export class MongoDBDataSourceImpl implements DataSource {
             this.getDatabase().then((db) => {
                 logger(`Collection ${collection} replacing one`);
                 logger(object);
+                const now = parseInt(moment().format('YYYYMMDDHHmmss'));
 
+                object[DataSourceController.FIELD_Modified] = now;
                 db.collection(collection).replaceOne({_id: object._id}, object).then((result) => {
                     resolve();
                 }).catch((err) => {

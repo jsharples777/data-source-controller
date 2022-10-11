@@ -14,6 +14,9 @@ type DataSourceItem = {
 export class DataSourceController implements DataSource {
     private static _instance: DataSourceController;
 
+    public static FIELD_Created = 'created';
+    public static FIELD_Modified = 'modified';
+
     public static getInstance(): DataSourceController {
         if (!DataSourceController._instance) {
             DataSourceController._instance = new DataSourceController();
@@ -37,7 +40,7 @@ export class DataSourceController implements DataSource {
     }
 
     public collection(name:string):Collection {
-        return new Collection(name);
+        return new Collection(name,this);
     }
 
 
@@ -61,7 +64,6 @@ export class DataSourceController implements DataSource {
 
     deleteCompositeArrayElement(collection: string, parentObjectKey: any, propertyName: string, childObjectKey: any): Promise<void> {
         return new Promise((resolve, reject) => {
-
             this.getPrimaryDataSource().deleteCompositeArrayElement(collection, parentObjectKey, propertyName, childObjectKey).then((results) => {
                 this.controllerConfigs.forEach((config) => {
                     config.source.deleteCompositeArrayElement(collection, parentObjectKey, propertyName, childObjectKey).then((childResults) => {
