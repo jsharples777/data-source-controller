@@ -11,32 +11,40 @@ const logger = debug('mongo-data-source-impl');
 const errorLogger = debug('mongo-data-source-impl-error');
 
 export class MongoDBDataSourceImpl implements DataSource {
-    private views:Views[] = [];
+    private views: Views[] = [];
 
     constructor() {
         MongoDataSource.getInstance().initialise();
     }
 
     shutdown(): Promise<void> {
-        return new Promise((resolve,reject) => {
+        return new Promise((resolve, reject) => {
             resolve();
         })
     }
 
 
-    insertCompositeArrayElement(collection: string, parentObjectKey: any, propertyName: string, childObject: any): Promise<void> {
+    insertCompositeArrayElement(collection: string, parentObjectKey: any, propertyName: string, childObject: any, username?: string): Promise<void> {
         return new Promise((resolve, logger) => {
             let obj: any = {};
             obj[propertyName] = childObject;
             const now = parseInt(moment().format('YYYYMMDDHHmmss'));
-            let modified:any = {}
+            let modified: any = {}
             modified[DataSourceController.FIELD_Modified] = now;
 
+            childObject[DataSourceController.FIELD_Created] = now;
+            childObject[DataSourceController.FIELD_Modified] = now;
+
+            if (username) {
+                childObject[DataSourceController.FIELD_CreatedBy] = username;
+                childObject[DataSourceController.FIELD_ModifiedBy] = username;
+                modified[DataSourceController.FIELD_ModifiedBy] = username;
+            }
             logger(`Inserting into collection ${collection} with new array element for field ${propertyName} with id ${childObject._id}`);
             this.getDatabase().then((db) => {
                 db.collection(collection).updateOne(
                     {_id: parentObjectKey},
-                    {$push: obj,$set:modified}).then((result) => {
+                    {$push: obj, $set: modified}).then((result) => {
                     logger(result);
                     resolve();
                 }).catch((err) => {
@@ -48,13 +56,21 @@ export class MongoDBDataSourceImpl implements DataSource {
         });
     }
 
-    replaceCompositeArrayElement(collection: string, parentObjectKey: any, propertyName: string, childObject: any): Promise<void> {
+    replaceCompositeArrayElement(collection: string, parentObjectKey: any, propertyName: string, childObject: any, username?: string): Promise<void> {
         return new Promise((resolve, logger) => {
             let pullObj: any = {};
             pullObj[propertyName] = {_id: childObject._id};
             const now = parseInt(moment().format('YYYYMMDDHHmmss'));
-            let modified:any = {}
+            let modified: any = {}
             modified[DataSourceController.FIELD_Modified] = now;
+            childObject[DataSourceController.FIELD_Created] = now;
+            childObject[DataSourceController.FIELD_Modified] = now;
+
+            if (username) {
+                childObject[DataSourceController.FIELD_CreatedBy] = username;
+                childObject[DataSourceController.FIELD_ModifiedBy] = username;
+                modified[DataSourceController.FIELD_ModifiedBy] = username;
+            }
             logger(`Updating collection ${collection} with updated array element for field ${propertyName} with id ${childObject._id}`);
             this.getDatabase().then((db) => {
                 db.collection(collection).updateOne(
@@ -65,7 +81,7 @@ export class MongoDBDataSourceImpl implements DataSource {
                     obj[propertyName] = childObject;
                     db.collection(collection).updateOne(
                         {_id: parentObjectKey},
-                        {$push: obj,$set:modified}).then((result) => {
+                        {$push: obj, $set: modified}).then((result) => {
                         logger(result);
                         resolve();
                     }).catch((err) => {
@@ -81,19 +97,23 @@ export class MongoDBDataSourceImpl implements DataSource {
         });
     }
 
-    deleteCompositeArrayElement(collection: string, parentObjectKey: any, propertyName: string, childObjectKey: any): Promise<void> {
+    deleteCompositeArrayElement(collection: string, parentObjectKey: any, propertyName: string, childObjectKey: any, username?: string): Promise<void> {
         return new Promise((resolve, logger) => {
             logger(`Updating collection ${collection} removing array element for field ${propertyName} with id ${childObjectKey}`);
             let obj: any = {};
             obj[propertyName] = {_id: childObjectKey};
             const now = parseInt(moment().format('YYYYMMDDHHmmss'));
-            let modified:any = {}
+            let modified: any = {}
             modified[DataSourceController.FIELD_Modified] = now;
+
+            if (username) {
+                modified[DataSourceController.FIELD_ModifiedBy] = username;
+            }
             this.getDatabase().then((db) => {
 
                 db.collection(collection).updateOne(
                     {_id: parentObjectKey},
-                    {$pull: obj,$set:modified}).then((result) => {
+                    {$pull: obj, $set: modified}).then((result) => {
                     logger(result);
                     resolve();
                 }).catch((err) => {
@@ -105,13 +125,19 @@ export class MongoDBDataSourceImpl implements DataSource {
         });
     }
 
-    replaceCompositeElement(collection: string, parentObjectKey: any, propertyName: string, childObject: any): Promise<void> {
+    replaceCompositeElement(collection: string, parentObjectKey: any, propertyName: string, childObject: any, username?: string): Promise<void> {
         return new Promise((resolve, logger) => {
             logger(`Updating collection ${collection}  with updated field ${propertyName} with id ${childObject._id}`);
             let obj: any = {};
             obj[propertyName] = childObject;
             const now = parseInt(moment().format('YYYYMMDDHHmmss'));
             obj[DataSourceController.FIELD_Modified] = now;
+            childObject[DataSourceController.FIELD_Modified] = now;
+
+            if (username) {
+                childObject[DataSourceController.FIELD_ModifiedBy] = username;
+                obj[DataSourceController.FIELD_ModifiedBy] = username;
+            }
             this.getDatabase().then((db) => {
 
                 db.collection(collection).updateOne(
@@ -129,7 +155,7 @@ export class MongoDBDataSourceImpl implements DataSource {
 
     }
 
-    deleteOne(collection: string, object: any): Promise<void> {
+    deleteOne(collection: string, object: any, username?: string): Promise<void> {
         return new Promise((resolve, logger) => {
             this.getDatabase().then((db) => {
                 logger(`Collection ${collection} removing id ${object._id}`);
@@ -146,7 +172,7 @@ export class MongoDBDataSourceImpl implements DataSource {
 
     }
 
-    deleteMany(collection: string, filter: any): Promise<void> {
+    deleteMany(collection: string, filter: any, username?: string): Promise<void> {
         return new Promise((resolve, logger) => {
             this.getDatabase().then((db) => {
                 logger(`Collection ${collection} removing many with filter`);
@@ -183,8 +209,7 @@ export class MongoDBDataSourceImpl implements DataSource {
                         logger(err);
                         errorLogger(err);
                     })
-                }
-                else {
+                } else {
                     db.collection(collection).find(localFilter).toArray().then((result) => {
                         resolve(result);
                     }).catch((err) => {
@@ -193,7 +218,6 @@ export class MongoDBDataSourceImpl implements DataSource {
                     })
 
                 }
-
 
 
             });
@@ -228,7 +252,7 @@ export class MongoDBDataSourceImpl implements DataSource {
                 logger(`Collection ${collection} finding one with key`);
                 logger(key);
 
-                db.collection(collection).find({_id:key}).toArray().then((result) => {
+                db.collection(collection).find({_id: key}).toArray().then((result) => {
                     if (result.length > 0) {
                         resolve(result[0]);
                     } else {
@@ -243,7 +267,7 @@ export class MongoDBDataSourceImpl implements DataSource {
 
     }
 
-    insertMany(collection: string, objects: any[]): Promise<void> {
+    insertMany(collection: string, objects: any[], username?: string): Promise<void> {
         return new Promise((resolve, logger) => {
             this.getDatabase().then((db) => {
                 logger(`Collection ${collection} inserting many`);
@@ -253,6 +277,10 @@ export class MongoDBDataSourceImpl implements DataSource {
                 objects.forEach((obj) => {
                     obj[DataSourceController.FIELD_Modified] = now;
                     obj[DataSourceController.FIELD_Created] = now;
+                    if (username) {
+                        obj[DataSourceController.FIELD_CreatedBy] = username;
+                        obj[DataSourceController.FIELD_ModifiedBy] = username;
+                    }
                 })
 
 
@@ -268,15 +296,19 @@ export class MongoDBDataSourceImpl implements DataSource {
 
     }
 
-    insertOne(collection: string, object: any): Promise<void> {
+    insertOne(collection: string, object: any, username?: string): Promise<void> {
         return new Promise((resolve, logger) => {
             this.getDatabase().then((db) => {
                 logger(`Collection ${collection} inserting one`);
                 logger(object);
                 const now = parseInt(moment().format('YYYYMMDDHHmmss'));
 
-                    object[DataSourceController.FIELD_Modified] = now;
-                    object[DataSourceController.FIELD_Created] = now;
+                object[DataSourceController.FIELD_Modified] = now;
+                object[DataSourceController.FIELD_Created] = now;
+                if (username) {
+                    object[DataSourceController.FIELD_CreatedBy] = username;
+                    object[DataSourceController.FIELD_ModifiedBy] = username;
+                }
 
                 db.collection(collection).insertOne(object).then((result) => {
                     resolve();
@@ -290,7 +322,7 @@ export class MongoDBDataSourceImpl implements DataSource {
 
     }
 
-    replaceOne(collection: string, object: any): Promise<void> {
+    replaceOne(collection: string, object: any, username?: string): Promise<void> {
         return new Promise((resolve, logger) => {
             this.getDatabase().then((db) => {
                 logger(`Collection ${collection} replacing one`);
@@ -298,6 +330,9 @@ export class MongoDBDataSourceImpl implements DataSource {
                 const now = parseInt(moment().format('YYYYMMDDHHmmss'));
 
                 object[DataSourceController.FIELD_Modified] = now;
+                if (username) {
+                    object[DataSourceController.FIELD_ModifiedBy] = username;
+                }
                 db.collection(collection).replaceOne({_id: object._id}, object).then((result) => {
                     resolve();
                 }).catch((err) => {
@@ -309,8 +344,8 @@ export class MongoDBDataSourceImpl implements DataSource {
         });
     }
 
-    updateOne(collection: string, object: any): Promise<void> {
-        return this.replaceOne(collection, object);
+    updateOne(collection: string, object: any, username?: string): Promise<void> {
+        return this.replaceOne(collection, object, username);
     }
 
 
@@ -334,15 +369,15 @@ export class MongoDBDataSourceImpl implements DataSource {
         });
     }
 
-    deleteAll(collection: string): Promise<void> {
-        return this.deleteMany(collection,{});
+    deleteAll(collection: string, username?: string): Promise<void> {
+        return this.deleteMany(collection, {}, username);
     }
 
     collections(): Promise<string[]> {
         return new Promise((resolve, logger) => {
             this.getDatabase().then((db) => {
                 db.collections().then((collections) => {
-                    const results:string[] = [];
+                    const results: string[] = [];
                     collections.forEach((collection) => {
                         results.push(collection.collectionName);
                     });
@@ -359,7 +394,7 @@ export class MongoDBDataSourceImpl implements DataSource {
     createView(collection: string, name: string, fields: string[], search?: any, sort?: any, derivedFields?: derivedField[]): View {
         const foundIndex = this.views.findIndex((view) => view.name === name);
         if (foundIndex < 0) {
-            const view = new MongoView(this,collection,name,fields, search, sort, derivedFields);
+            const view = new MongoView(this, collection, name, fields, search, sort, derivedFields);
             this.views.push({
                 name,
                 view

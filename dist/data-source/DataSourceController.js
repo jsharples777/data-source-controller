@@ -44,11 +44,11 @@ class DataSourceController {
         }
         return this.primarySource;
     }
-    deleteCompositeArrayElement(collection, parentObjectKey, propertyName, childObjectKey) {
+    deleteCompositeArrayElement(collection, parentObjectKey, propertyName, childObjectKey, username) {
         return new Promise((resolve, reject) => {
-            this.getPrimaryDataSource().deleteCompositeArrayElement(collection, parentObjectKey, propertyName, childObjectKey).then((results) => {
+            this.getPrimaryDataSource().deleteCompositeArrayElement(collection, parentObjectKey, propertyName, childObjectKey, username).then((results) => {
                 this.controllerConfigs.forEach((config) => {
-                    config.source.deleteCompositeArrayElement(collection, parentObjectKey, propertyName, childObjectKey).then((childResults) => {
+                    config.source.deleteCompositeArrayElement(collection, parentObjectKey, propertyName, childObjectKey, username).then((childResults) => {
                     }).catch((err) => {
                         logger(err);
                     });
@@ -59,11 +59,11 @@ class DataSourceController {
             });
         });
     }
-    deleteOne(collection, object) {
+    deleteOne(collection, object, username) {
         return new Promise((resolve, reject) => {
-            this.getPrimaryDataSource().deleteOne(collection, object).then((results) => {
+            this.getPrimaryDataSource().deleteOne(collection, object, username).then((results) => {
                 this.controllerConfigs.forEach((config) => {
-                    config.source.deleteOne(collection, object).then((childResults) => {
+                    config.source.deleteOne(collection, object, username).then((childResults) => {
                     }).catch((err) => {
                         logger(err);
                     });
@@ -74,11 +74,11 @@ class DataSourceController {
             });
         });
     }
-    deleteMany(collection, filter) {
+    deleteMany(collection, filter, username) {
         return new Promise((resolve, reject) => {
-            this.getPrimaryDataSource().deleteMany(collection, filter).then((results) => {
+            this.getPrimaryDataSource().deleteMany(collection, filter, username).then((results) => {
                 this.controllerConfigs.forEach((config) => {
-                    config.source.deleteMany(collection, filter).then((childResults) => {
+                    config.source.deleteMany(collection, filter, username).then((childResults) => {
                     }).catch((err) => {
                         logger(err);
                     });
@@ -116,11 +116,11 @@ class DataSourceController {
             });
         });
     }
-    insertCompositeArrayElement(collection, parentObjectKey, propertyName, childObject) {
+    insertCompositeArrayElement(collection, parentObjectKey, propertyName, childObject, username) {
         return new Promise((resolve, reject) => {
-            this.getPrimaryDataSource().insertCompositeArrayElement(collection, parentObjectKey, propertyName, childObject).then((results) => {
+            this.getPrimaryDataSource().insertCompositeArrayElement(collection, parentObjectKey, propertyName, childObject, username).then((results) => {
                 this.controllerConfigs.forEach((config) => {
-                    config.source.insertCompositeArrayElement(collection, parentObjectKey, propertyName, childObject).then((childResults) => {
+                    config.source.insertCompositeArrayElement(collection, parentObjectKey, propertyName, childObject, username).then((childResults) => {
                     }).catch((err) => {
                         logger(err);
                     });
@@ -131,11 +131,11 @@ class DataSourceController {
             });
         });
     }
-    insertMany(collection, objects) {
+    insertMany(collection, objects, username) {
         return new Promise((resolve, reject) => {
-            this.getPrimaryDataSource().insertMany(collection, objects).then((results) => {
+            this.getPrimaryDataSource().insertMany(collection, objects, username).then((results) => {
                 this.controllerConfigs.forEach((config) => {
-                    config.source.insertMany(collection, objects).then((childResults) => {
+                    config.source.insertMany(collection, objects, username).then((childResults) => {
                     }).catch((err) => {
                         logger(err);
                     });
@@ -146,11 +146,11 @@ class DataSourceController {
             });
         });
     }
-    insertOne(collection, object) {
+    insertOne(collection, object, username) {
         return new Promise((resolve, reject) => {
-            this.getPrimaryDataSource().insertOne(collection, object).then((results) => {
+            this.getPrimaryDataSource().insertOne(collection, object, username).then((results) => {
                 this.controllerConfigs.forEach((config) => {
-                    config.source.insertOne(collection, object).then((childResults) => {
+                    config.source.insertOne(collection, object, username).then((childResults) => {
                     }).catch((err) => {
                         logger(err);
                     });
@@ -161,11 +161,11 @@ class DataSourceController {
             });
         });
     }
-    replaceCompositeArrayElement(collection, parentObjectKey, propertyName, childObject) {
+    replaceCompositeArrayElement(collection, parentObjectKey, propertyName, childObject, username) {
         return new Promise((resolve, reject) => {
-            this.getPrimaryDataSource().replaceCompositeArrayElement(collection, parentObjectKey, propertyName, childObject).then((results) => {
+            this.getPrimaryDataSource().replaceCompositeArrayElement(collection, parentObjectKey, propertyName, childObject, username).then((results) => {
                 this.controllerConfigs.forEach((config) => {
-                    config.source.replaceCompositeArrayElement(collection, parentObjectKey, propertyName, childObject).then((childResults) => {
+                    config.source.replaceCompositeArrayElement(collection, parentObjectKey, propertyName, childObject, username).then((childResults) => {
                     }).catch((err) => {
                         logger(err);
                     });
@@ -177,11 +177,11 @@ class DataSourceController {
         });
         ;
     }
-    replaceCompositeElement(collection, parentObjectKey, propertyName, childObject) {
+    replaceCompositeElement(collection, parentObjectKey, propertyName, childObject, username) {
         return new Promise((resolve, reject) => {
-            this.getPrimaryDataSource().replaceCompositeElement(collection, parentObjectKey, propertyName, childObject).then((results) => {
+            this.getPrimaryDataSource().replaceCompositeElement(collection, parentObjectKey, propertyName, childObject, username).then((results) => {
                 this.controllerConfigs.forEach((config) => {
-                    config.source.replaceCompositeElement(collection, parentObjectKey, propertyName, childObject).then((childResults) => {
+                    config.source.replaceCompositeElement(collection, parentObjectKey, propertyName, childObject, username).then((childResults) => {
                     }).catch((err) => {
                         logger(err);
                     });
@@ -192,11 +192,11 @@ class DataSourceController {
             });
         });
     }
-    replaceOne(collection, object) {
+    replaceOne(collection, object, username) {
         return new Promise((resolve, reject) => {
-            this.getPrimaryDataSource().replaceOne(collection, object).then((results) => {
+            this.getPrimaryDataSource().replaceOne(collection, object, username).then((results) => {
                 this.controllerConfigs.forEach((config) => {
-                    config.source.replaceOne(collection, object).then((childResults) => {
+                    config.source.replaceOne(collection, object, username).then((childResults) => {
                     }).catch((err) => {
                         logger(err);
                     });
@@ -207,11 +207,11 @@ class DataSourceController {
             });
         });
     }
-    updateOne(collection, object) {
+    updateOne(collection, object, username) {
         return new Promise((resolve, reject) => {
-            this.replaceOne(collection, object).then((results) => {
+            this.replaceOne(collection, object, username).then((results) => {
                 this.controllerConfigs.forEach((config) => {
-                    config.source.replaceOne(collection, object).then((childResults) => {
+                    config.source.replaceOne(collection, object, username).then((childResults) => {
                     }).catch((err) => {
                         logger(err);
                     });
@@ -222,11 +222,11 @@ class DataSourceController {
             });
         });
     }
-    deleteAll(collection) {
+    deleteAll(collection, username) {
         return new Promise((resolve, reject) => {
-            this.getPrimaryDataSource().deleteAll(collection).then((results) => {
+            this.getPrimaryDataSource().deleteAll(collection, username).then((results) => {
                 this.controllerConfigs.forEach((config) => {
-                    config.source.deleteAll(collection).then((childResults) => {
+                    config.source.deleteAll(collection, username).then((childResults) => {
                     }).catch((err) => {
                         logger(err);
                     });
@@ -263,6 +263,8 @@ class DataSourceController {
     }
 }
 exports.DataSourceController = DataSourceController;
-DataSourceController.FIELD_Created = 'created';
-DataSourceController.FIELD_Modified = 'modified';
+DataSourceController.FIELD_Created = 'createdOn';
+DataSourceController.FIELD_Modified = 'modifiedOn';
+DataSourceController.FIELD_CreatedBy = 'createdBy';
+DataSourceController.FIELD_ModifiedBy = 'modifiedBy';
 //# sourceMappingURL=DataSourceController.js.map

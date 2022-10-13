@@ -19,7 +19,7 @@ export class FileSystemDBDataSourceImpl implements DataSource {
         });
     }
 
-    deleteAll(collection: string): Promise<void> {
+    deleteAll(collection: string, username?:string): Promise<void> {
         return new Promise((resolve, reject) => {
             const col = FileSystemDB.getInstance().collection(collection);
             const results = col.find().toArray();
@@ -31,7 +31,7 @@ export class FileSystemDBDataSourceImpl implements DataSource {
         });
     }
 
-    deleteMany(collection: string, filter: any): Promise<void> {
+    deleteMany(collection: string, filter: any, username?:string): Promise<void> {
         return new Promise((resolve, reject) => {
             const col = FileSystemDB.getInstance().collection(collection);
             const results = col.find(filter).toArray();
@@ -42,7 +42,7 @@ export class FileSystemDBDataSourceImpl implements DataSource {
             resolve();
         });
     }
-    deleteOne(collection: string, object: any): Promise<void> {
+    deleteOne(collection: string, object: any, username?:string): Promise<void> {
         return new Promise((resolve, reject) => {
             const col = FileSystemDB.getInstance().collection(collection);
             const keyField = col.getKeyFieldName();
@@ -86,7 +86,7 @@ export class FileSystemDBDataSourceImpl implements DataSource {
         });
     }
 
-    insertMany(collection: string, objects: any[]): Promise<void> {
+    insertMany(collection: string, objects: any[], username?:string): Promise<void> {
         return new Promise((resolve, reject) => {
             const now = parseInt(moment().format('YYYYMMDDHHmmss'));
             const col = FileSystemDB.getInstance().collection(collection);
@@ -97,6 +97,10 @@ export class FileSystemDBDataSourceImpl implements DataSource {
 
                     object[DataSourceController.FIELD_Modified] = now;
                     object[DataSourceController.FIELD_Created] = now;
+                    if (username) {
+                        object[DataSourceController.FIELD_CreatedBy] = username;
+                        object[DataSourceController.FIELD_ModifiedBy] = username;
+                    }
                     col.insertObject(object[keyField],object);
                 })
             }
@@ -104,75 +108,106 @@ export class FileSystemDBDataSourceImpl implements DataSource {
         });
     }
 
-    insertOne(collection: string, object: any): Promise<void> {
+    insertOne(collection: string, object: any, username?:string): Promise<void> {
         return new Promise((resolve, reject) => {
             const now = parseInt(moment().format('YYYYMMDDHHmmss'));
             const col = FileSystemDB.getInstance().collection(collection);
             const keyField = col.getKeyFieldName();
             object[DataSourceController.FIELD_Modified] = now;
             object[DataSourceController.FIELD_Created] = now;
+            if (username) {
+                object[DataSourceController.FIELD_CreatedBy] = username;
+                object[DataSourceController.FIELD_ModifiedBy] = username;
+            }
             col.insertObject(object[keyField],object);
             resolve();
         });
     }
 
-    replaceOne(collection: string, object: any): Promise<void> {
-        return this.updateOne(collection,object);
+    replaceOne(collection: string, object: any, username?:string): Promise<void> {
+        return this.updateOne(collection,object, username);
     }
 
-    updateOne(collection: string, object: any): Promise<void> {
+    updateOne(collection: string, object: any, username?:string): Promise<void> {
         return new Promise((resolve, reject) => {
             const now = parseInt(moment().format('YYYYMMDDHHmmss'));
             const col = FileSystemDB.getInstance().collection(collection);
             const keyField = col.getKeyFieldName();
             object[DataSourceController.FIELD_Modified] = now;
+            if (username) {
+                object[DataSourceController.FIELD_ModifiedBy] = username;
+            }
+
             col.upsertObject(object[keyField],object);
             resolve();
         });
     }
 
-    deleteCompositeArrayElement(collection: string, parentObjectKey: any, propertyName: string, childObjectKey: any): Promise<void> {
+    deleteCompositeArrayElement(collection: string, parentObjectKey: any, propertyName: string, childObjectKey: any, username?:string): Promise<void> {
         return new Promise((resolve, reject) => {
             const parentObj = FileSystemDB.getInstance().collection(collection).findByKey(parentObjectKey);
             const now = parseInt(moment().format('YYYYMMDDHHmmss'));
             parentObj[DataSourceController.FIELD_Modified] = now;
+            if (username) {
+                parentObj[DataSourceController.FIELD_ModifiedBy] = username;
+            }
             FileSystemDB.getInstance().collection(collection).upsertObject(parentObjectKey,parentObj);
             FileSystemDBHelper.removeCompositeArrayElement(collection,propertyName,parentObjectKey,childObjectKey);
             resolve();
         });
     }
 
-    insertCompositeArrayElement(collection: string, parentObjectKey: any, propertyName: string, childObject: any): Promise<void> {
+    insertCompositeArrayElement(collection: string, parentObjectKey: any, propertyName: string, childObject: any, username?:string): Promise<void> {
         return new Promise((resolve, reject) => {
             const parentObj = FileSystemDB.getInstance().collection(collection).findByKey(parentObjectKey);
             const now = parseInt(moment().format('YYYYMMDDHHmmss'));
             parentObj[DataSourceController.FIELD_Modified] = now;
+            childObject[DataSourceController.FIELD_Created] = now;
+            childObject[DataSourceController.FIELD_Modified] = now;
+
+            if (username) {
+                childObject[DataSourceController.FIELD_CreatedBy] = username;
+                childObject[DataSourceController.FIELD_ModifiedBy] = username;
+                parentObj[DataSourceController.FIELD_ModifiedBy] = username;
+            }
+
             FileSystemDB.getInstance().collection(collection).upsertObject(parentObjectKey,parentObj);
             FileSystemDBHelper.insertElementIntoCompositeArray(collection,propertyName,parentObjectKey,childObject);
             resolve();
         });
     }
 
-    replaceCompositeArrayElement(collection: string, parentObjectKey: any, propertyName: string, childObject: any): Promise<void> {
+    replaceCompositeArrayElement(collection: string, parentObjectKey: any, propertyName: string, childObject: any, username?:string): Promise<void> {
         return new Promise((resolve, reject) => {
             const col = FileSystemDB.getInstance().collection(collection);
             const keyField = col.getKeyFieldName();
             const parentObj = col.findByKey(parentObjectKey);
             const now = parseInt(moment().format('YYYYMMDDHHmmss'));
             parentObj[DataSourceController.FIELD_Modified] = now;
+            childObject[DataSourceController.FIELD_Modified] = now;
+            if (username) {
+                parentObj[DataSourceController.FIELD_ModifiedBy] = username;
+                childObject[DataSourceController.FIELD_ModifiedBy] = username;
+            }
+
             col.upsertObject(parentObjectKey,parentObj);
             FileSystemDBHelper.updateCompositeArrayElement(collection,propertyName,parentObjectKey,childObject[keyField],childObject);
             resolve();
         });
     }
 
-    replaceCompositeElement(collection: string, parentObjectKey: any, propertyName: string, childObject: any): Promise<void> {
+    replaceCompositeElement(collection: string, parentObjectKey: any, propertyName: string, childObject: any, username?:string): Promise<void> {
         return new Promise((resolve, reject) => {
             const col = FileSystemDB.getInstance().collection(collection);
             const keyField = col.getKeyFieldName();
             const parentObj = col.findByKey(parentObjectKey);
             const now = parseInt(moment().format('YYYYMMDDHHmmss'));
             parentObj[DataSourceController.FIELD_Modified] = now;
+            childObject[DataSourceController.FIELD_Modified] = now;
+            if (username) {
+                parentObj[DataSourceController.FIELD_ModifiedBy] = username;
+                childObject[DataSourceController.FIELD_ModifiedBy] = username;
+            }
             col.upsertObject(parentObjectKey,parentObj);
             FileSystemDBHelper.updateCompositeObject(collection,propertyName,parentObjectKey,childObject);
             resolve();

@@ -14,8 +14,10 @@ type DataSourceItem = {
 export class DataSourceController implements DataSource {
     private static _instance: DataSourceController;
 
-    public static FIELD_Created = 'created';
-    public static FIELD_Modified = 'modified';
+    public static FIELD_Created = 'createdOn';
+    public static FIELD_Modified = 'modifiedOn';
+    public static FIELD_CreatedBy = 'createdBy';
+    public static FIELD_ModifiedBy = 'modifiedBy';
 
     public static getInstance(): DataSourceController {
         if (!DataSourceController._instance) {
@@ -62,11 +64,11 @@ export class DataSourceController implements DataSource {
         return this.primarySource;
     }
 
-    deleteCompositeArrayElement(collection: string, parentObjectKey: any, propertyName: string, childObjectKey: any): Promise<void> {
+    deleteCompositeArrayElement(collection: string, parentObjectKey: any, propertyName: string, childObjectKey: any, username?:string): Promise<void> {
         return new Promise((resolve, reject) => {
-            this.getPrimaryDataSource().deleteCompositeArrayElement(collection, parentObjectKey, propertyName, childObjectKey).then((results) => {
+            this.getPrimaryDataSource().deleteCompositeArrayElement(collection, parentObjectKey, propertyName, childObjectKey,username).then((results) => {
                 this.controllerConfigs.forEach((config) => {
-                    config.source.deleteCompositeArrayElement(collection, parentObjectKey, propertyName, childObjectKey).then((childResults) => {
+                    config.source.deleteCompositeArrayElement(collection, parentObjectKey, propertyName, childObjectKey,username).then((childResults) => {
 
                     }).catch((err) => {
                         logger(err);
@@ -81,12 +83,12 @@ export class DataSourceController implements DataSource {
 
     }
 
-    deleteOne(collection: string, object: any): Promise<void> {
+    deleteOne(collection: string, object: any, username?:string): Promise<void> {
         return new Promise((resolve, reject) => {
 
-            this.getPrimaryDataSource().deleteOne(collection, object).then((results) => {
+            this.getPrimaryDataSource().deleteOne(collection, object, username).then((results) => {
                 this.controllerConfigs.forEach((config) => {
-                    config.source.deleteOne(collection, object).then((childResults) => {
+                    config.source.deleteOne(collection, object, username).then((childResults) => {
 
                     }).catch((err) => {
                         logger(err);
@@ -101,11 +103,11 @@ export class DataSourceController implements DataSource {
 
     }
 
-    deleteMany(collection: string, filter: any): Promise<void> {
+    deleteMany(collection: string, filter: any, username?:string): Promise<void> {
         return new Promise((resolve, reject) => {
-            this.getPrimaryDataSource().deleteMany(collection, filter).then((results) => {
+            this.getPrimaryDataSource().deleteMany(collection, filter,username).then((results) => {
                 this.controllerConfigs.forEach((config) => {
-                    config.source.deleteMany(collection, filter).then((childResults) => {
+                    config.source.deleteMany(collection, filter, username).then((childResults) => {
 
                     }).catch((err) => {
                         logger(err);
@@ -156,11 +158,11 @@ export class DataSourceController implements DataSource {
 
     }
 
-    insertCompositeArrayElement(collection: string, parentObjectKey: any, propertyName: string, childObject: any): Promise<void> {
+    insertCompositeArrayElement(collection: string, parentObjectKey: any, propertyName: string, childObject: any, username?:string): Promise<void> {
         return new Promise((resolve, reject) => {
-            this.getPrimaryDataSource().insertCompositeArrayElement(collection, parentObjectKey, propertyName, childObject).then((results) => {
+            this.getPrimaryDataSource().insertCompositeArrayElement(collection, parentObjectKey, propertyName, childObject,username).then((results) => {
                 this.controllerConfigs.forEach((config) => {
-                    config.source.insertCompositeArrayElement(collection, parentObjectKey, propertyName, childObject).then((childResults) => {
+                    config.source.insertCompositeArrayElement(collection, parentObjectKey, propertyName, childObject,username).then((childResults) => {
 
                     }).catch((err) => {
                         logger(err);
@@ -175,12 +177,12 @@ export class DataSourceController implements DataSource {
 
     }
 
-    insertMany(collection: string, objects: any[]): Promise<void> {
+    insertMany(collection: string, objects: any[], username?:string): Promise<void> {
         return new Promise((resolve, reject) => {
 
-            this.getPrimaryDataSource().insertMany(collection, objects).then((results) => {
+            this.getPrimaryDataSource().insertMany(collection, objects,username).then((results) => {
                 this.controllerConfigs.forEach((config) => {
-                    config.source.insertMany(collection, objects).then((childResults) => {
+                    config.source.insertMany(collection, objects,username).then((childResults) => {
 
                     }).catch((err) => {
                         logger(err);
@@ -195,13 +197,13 @@ export class DataSourceController implements DataSource {
 
     }
 
-    insertOne(collection: string, object: any): Promise<void> {
+    insertOne(collection: string, object: any, username?:string): Promise<void> {
         return new Promise((resolve, reject) => {
 
 
-            this.getPrimaryDataSource().insertOne(collection, object).then((results) => {
+            this.getPrimaryDataSource().insertOne(collection, object,username).then((results) => {
                 this.controllerConfigs.forEach((config) => {
-                    config.source.insertOne(collection, object).then((childResults) => {
+                    config.source.insertOne(collection, object,username).then((childResults) => {
 
                     }).catch((err) => {
                         logger(err);
@@ -216,13 +218,13 @@ export class DataSourceController implements DataSource {
 
     }
 
-    replaceCompositeArrayElement(collection: string, parentObjectKey: any, propertyName: string, childObject: any): Promise<void> {
+    replaceCompositeArrayElement(collection: string, parentObjectKey: any, propertyName: string, childObject: any, username?:string): Promise<void> {
         return new Promise((resolve, reject) => {
 
 
-            this.getPrimaryDataSource().replaceCompositeArrayElement(collection, parentObjectKey, propertyName, childObject).then((results) => {
+            this.getPrimaryDataSource().replaceCompositeArrayElement(collection, parentObjectKey, propertyName, childObject, username).then((results) => {
                 this.controllerConfigs.forEach((config) => {
-                    config.source.replaceCompositeArrayElement(collection, parentObjectKey, propertyName, childObject).then((childResults) => {
+                    config.source.replaceCompositeArrayElement(collection, parentObjectKey, propertyName, childObject, username).then((childResults) => {
 
                     }).catch((err) => {
                         logger(err);
@@ -237,12 +239,12 @@ export class DataSourceController implements DataSource {
         ;
     }
 
-    replaceCompositeElement(collection: string, parentObjectKey: any, propertyName: string, childObject: any): Promise<void> {
+    replaceCompositeElement(collection: string, parentObjectKey: any, propertyName: string, childObject: any, username?:string): Promise<void> {
         return new Promise((resolve, reject) => {
 
-            this.getPrimaryDataSource().replaceCompositeElement(collection, parentObjectKey, propertyName, childObject).then((results) => {
+            this.getPrimaryDataSource().replaceCompositeElement(collection, parentObjectKey, propertyName, childObject, username).then((results) => {
                 this.controllerConfigs.forEach((config) => {
-                    config.source.replaceCompositeElement(collection, parentObjectKey, propertyName, childObject).then((childResults) => {
+                    config.source.replaceCompositeElement(collection, parentObjectKey, propertyName, childObject,username).then((childResults) => {
 
                     }).catch((err) => {
                         logger(err);
@@ -257,12 +259,12 @@ export class DataSourceController implements DataSource {
 
     }
 
-    replaceOne(collection: string, object: any): Promise<void> {
+    replaceOne(collection: string, object: any, username?:string): Promise<void> {
         return new Promise((resolve, reject) => {
 
-            this.getPrimaryDataSource().replaceOne(collection, object).then((results) => {
+            this.getPrimaryDataSource().replaceOne(collection, object, username).then((results) => {
                 this.controllerConfigs.forEach((config) => {
-                    config.source.replaceOne(collection, object).then((childResults) => {
+                    config.source.replaceOne(collection, object,username).then((childResults) => {
 
                     }).catch((err) => {
                         logger(err);
@@ -277,11 +279,11 @@ export class DataSourceController implements DataSource {
 
     }
 
-    updateOne(collection: string, object: any): Promise<void> {
+    updateOne(collection: string, object: any, username?:string): Promise<void> {
         return new Promise((resolve, reject) => {
-            this.replaceOne(collection, object).then((results) => {
+            this.replaceOne(collection, object,username).then((results) => {
                 this.controllerConfigs.forEach((config) => {
-                    config.source.replaceOne(collection, object).then((childResults) => {
+                    config.source.replaceOne(collection, object,username).then((childResults) => {
 
                     }).catch((err) => {
                         logger(err);
@@ -296,12 +298,12 @@ export class DataSourceController implements DataSource {
 
     }
 
-    deleteAll(collection: string): Promise<void> {
+    deleteAll(collection: string, username?:string): Promise<void> {
         return new Promise((resolve, reject) => {
 
-            this.getPrimaryDataSource().deleteAll(collection).then((results) => {
+            this.getPrimaryDataSource().deleteAll(collection,username).then((results) => {
                 this.controllerConfigs.forEach((config) => {
-                    config.source.deleteAll(collection).then((childResults) => {
+                    config.source.deleteAll(collection,username).then((childResults) => {
 
                     }).catch((err) => {
                         logger(err);
